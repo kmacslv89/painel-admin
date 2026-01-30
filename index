@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guias para Orçamento</title>
+    <style>
+        /* Variáveis CSS para Temas */
+        :root {
+            --bg: #1a1a1a;
+            --card: #2d2d2d;
+            --sub-card: #333333;
+            --text: #ffffff;
+            --input-bg: #3d3d3d;
+            --border: #444;
+            --primary: #2ecc71; /* Cor padrão */
+            --danger: #ff4757;
+        }
+
+        body.light-mode {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --sub-card: #f9f9f9;
+            --text: #333333;
+            --input-bg: #e4e6eb;
+            --border: #ccc;
+        }
+
+        body { 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            transition: background 0.3s, color 0.3s;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        button, input, select { touch-action: manipulation; }
+
+        /* --- TOP BAR NEUTRA --- */
+        .top-bar { 
+            width: 100%; max-width: 520px; 
+            display: flex; justify-content: flex-end; 
+            margin-bottom: 10px; position: relative; 
+            gap: 5px; 
+            align-items: center;
+        }
+        
+        /* Botões de Ícone (SVG) */
+        .gear-btn { 
+            background: none; border: none; 
+            cursor: pointer; color: #888; /* Cor neutra inicial */
+            padding: 8px; 
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .gear-btn svg {
+            width: 24px; height: 24px;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .gear-btn:hover { 
+            color: var(--text); /* Acende na cor do texto do tema */
+            background-color: rgba(128, 128, 128, 0.1); 
+        }
+
+        /* Animação específica para a engrenagem */
+        .gear-rotate:hover svg { 
+            transform: rotate(90deg); 
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* Menu Configurações */
+        .settings-menu {
+            display: none; position: absolute; top: 50px; right: 0; 
+            background: var(--card); border: 1px solid var(--border); 
+            border-radius: 12px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 100; width: 230px;
+        }
+        .settings-menu.open { display: block; }
+        .settings-section { margin-bottom: 15px; }
+        .settings-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        
+        /* Toggle Tema */
+        .theme-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 2px; cursor: pointer; }
+        .theme-opt { flex: 1; text-align: center; padding: 6px; font-size: 12px; border-radius: 18px; transition: 0.2s; color: var(--text); }
+        .theme-opt.active { background: var(--card); box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold; }
+
+        /* Grid de Cores */
+        .color-grid { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; align-items: center; }
+        .color-swatch { 
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer; 
+            border: 2px solid transparent; box-sizing: border-box; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.active { border-color: var(--text); transform: scale(1.1); }
+
+        /* Botão + Personalizado */
+        .custom-picker-btn {
+            background: var(--input-bg); border: 1px dashed #888;
+            color: #888; font-size: 18px; font-weight: bold;
+            transition: all 0.2s; padding: 0; margin: 0; line-height: 0;
+        }
+        .custom-picker-btn.active { border: 2px solid var(--text); border-style: solid; color: transparent; }
+        .custom-picker-btn:hover { border-color: var(--text); color: var(--text); }
+        .custom-picker-btn span { display: block; margin-top: -2px; }
+
+        /* Modal de Cor Personalizada */
+        .custom-color-modal {
+            display: none; position: absolute; top: 100%; right: 0; margin-top: 10px;
+            background: var(--card); border: 1px solid var(--border);
+            padding: 15px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 101; width: 200px;
+            flex-direction: column; gap: 10px;
+        }
+        .custom-color-modal.open { display: flex; }
+        
+        .color-preview-box {
+            width: 100%; height: 40px; border-radius: 8px; 
+            border: 1px solid var(--border); background-color: var(--primary);
+            transition: background 0.1s; margin-bottom: 5px;
+        }
+        
+        .slider-group { display: flex; flex-direction: column; gap: 2px; }
+        .slider-label { font-size: 10px; color: #888; }
+        
+        .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer; margin: 5px 0; }
+        .custom-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 1px solid #888; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        
+        #hueSlider { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+        #satSlider { background: linear-gradient(to right, #888, var(--primary)); }
+        #ligSlider { background: linear-gradient(to right, #000, var(--primary), #fff); }
+
+        /* Main Styles */
+        .main-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 520px; margin-bottom: 20px; box-sizing: border-box; transition: background 0.3s; }
+        .main-title-box { cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding-bottom: 10px; }
+        h2 { text-align: center; color: var(--primary); margin: 0; font-size: 22px; }
+        
+        #mainContentWrapper { transition: all 0.3s ease-in-out; overflow: hidden; max-height: 5000px; opacity: 1; }
+        #mainContentWrapper.collapsed { max-height: 0; opacity: 0; }
+
+        .sub-section { background: var(--sub-card); padding: 15px; border-radius: 15px; margin-top: 25px; border: 1px solid var(--border); }
+
+        label { display: block; margin: 12px 0 5px; font-weight: 600; font-size: 14px; color: #888; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--text); font-size: 16px; box-sizing: border-box; outline: none; }
+        .btn-main { width: 100%; padding: 18px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.2s; }
+        .btn-main:hover { filter: brightness(1.1); }
+        
+        .side-by-side { display: flex; gap: 10px; width: 100%; }
+        .side-by-side > div { flex: 1; }
+
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-btns { display: flex; gap: 8px; align-items: center; }
+        
+        .btn-icon-simple { background: none; border: none; color: var(--primary); font-size: 24px; cursor: pointer; font-weight: bold; padding: 5px; line-height: 1; transition: opacity 0.2s; }
+        .btn-icon-simple:hover { opacity: 0.8; }
+        
+        .btn-icon-danger { color: var(--danger); font-size: 16px; cursor: pointer; font-weight: bold; }
+        
+        .btn-icon-drag { color: var(--text); opacity: 0.5; font-size: 18px; cursor: grab; touch-action: none; }
+
+        .btn-confirm-style { background: var(--primary); color: #fff; border: none; border-radius: 4px; padding: 8px 15px; font-weight: bold; cursor: pointer; font-size: 14px; }
+
+        .setup-table { width: 100%; border-collapse: collapse; font-size: 10px; table-layout: fixed; }
+        .setup-table th, .setup-table td { border: 1px solid var(--border); padding: 8px 2px; text-align: center; vertical-align: middle; height: 45px; box-sizing: border-box; color: var(--text); }
+        .setup-table input { padding: 6px; font-size: 10px; border-radius: 4px; background: var(--bg); color: var(--text); border: 1px solid var(--border); width: 90%; }
+        
+        .col-ctrl { width: 28px; border: none !important; padding: 0 !important; }
+        .ctrl-icon-box { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; min-height: 45px; }
+        .btn-del-raw { background: none !important; border: none !important; padding: 0 !important; cursor: pointer; }
+        .handle { cursor: grab; touch-action: none; }
+
+        .selector-row { background: var(--input-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .selector-row span { color: var(--primary); font-weight: bold; font-size: 18px; }
+        .arrow-down { border: solid #888; border-width: 0 3px 3px 0; display: inline-block; padding: 3px; transform: rotate(45deg); margin-bottom: 5px; }
+        
+        details { background: var(--card); border-radius: 0 0 10px 10px; border: 1px solid var(--border); border-top: none; overflow: hidden; margin-top: 0; }
+        summary { display: none; }
+        
+        .suggest-item-row { border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+        .suggest-item-row:last-child { border-bottom: none; }
+        .suggest-data { flex-grow: 1; padding: 12px; color: var(--text); display: flex; justify-content: space-between; cursor: pointer; font-size: 12px; }
+        .suggest-data.selected { background: rgba(128, 128, 128, 0.1); border-left: 3px solid var(--primary); }
+        .suggest-edit-input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 4px; font-size: 11px; border-radius: 4px; width: 80%; }
+        
+        .suggest-footer { display: flex; border-top: 1px solid var(--border); background: var(--bg); }
+        .btn-footer-suggest { flex: 1; padding: 10px; background: none; border: none; color: #888; font-size: 11px; border-right: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
+        .btn-footer-suggest:last-child { border-right: none; flex: 0 0 45px; font-size: 20px; }
+        .btn-footer-suggest.active { color: var(--primary); font-weight: bold; }
+
+        .temp-add-row { display: none; background: var(--input-bg); padding: 8px; border-top: 1px solid var(--border); align-items: center; gap: 5px; }
+        .temp-add-row.active { display: flex; }
+        .btn-confirm-add { background: var(--primary); color: #fff; border: none; border-radius: 4px; width: 30px; height: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .formula-radios { display: flex; gap: 10px; margin-bottom: 10px; }
+        .formula-opt { flex: 1; text-align: center; }
+        .formula-opt input { display: none; }
+        .formula-opt label { margin: 0; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; color: #888; transition: all 0.2s; font-size: 13px; font-weight: normal; }
+        .formula-opt input:checked + label { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: bold; }
+
+        .extras-chips-container { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+        .extra-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 5px 10px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 5px; color: var(--text); }
+        .extra-chip span { color: var(--primary); font-weight: bold; }
+        .extra-chip-rm { cursor: pointer; color: var(--danger); font-weight: bold; margin-left: 5px; }
+
+        .extra-section { margin-top: 25px; }
+        .extra-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        
+        .btn-simple-toggle { background: none; border: none; color: var(--primary); font-size: 28px; line-height: 1; cursor: pointer; font-weight: bold; padding: 0 5px; transition: opacity 0.2s; }
+        .btn-simple-toggle:hover { opacity: 0.8; }
+
+        .result { margin-top: 20px; padding: 20px; background: rgba(128, 128, 128, 0.05); border: 1px solid var(--primary); border-radius: 15px; text-align: center; }
+        .result-title { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 15px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--border); font-size: 12px; color: #888; }
+        .detail-row.total-custo { color: var(--text); font-weight: bold; border-top: 1px solid var(--border); margin-top: 5px; padding-top: 8px; }
+        
+        .form-novo { display: none; background: var(--card); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed var(--border); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .helper-text { font-size: 11px; color: #777; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <button class="gear-btn" onclick="downloadApp()" title="Baixar Offline">
+        <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+    </button>
+    
+    <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+    </button>
+    
+    <div id="settingsMenu" class="settings-menu" onclick="event.stopPropagation()">
+        <div class="settings-section">
+            <div class="settings-title">Tema</div>
+            <div class="theme-toggle">
+                <div class="theme-opt active" id="themeDark" onclick="setTheme('dark')">Escuro</div>
+                <div class="theme-opt" id="themeLight" onclick="setTheme('light')">Claro</div>
+            </div>
+        </div>
+        <div class="settings-section" style="position: relative;">
+            <div class="settings-title">Cor de Destaque</div>
+            <div class="color-grid" id="colorGrid">
+                </div>
+            
+            <div id="customColorModal" class="custom-color-modal" onclick="event.stopPropagation()">
+                <div class="settings-title" style="align-self: flex-start; margin-bottom:5px;">Personalizar</div>
+                <div id="colorPreview" class="color-preview-box"></div>
+                
+                <div class="slider-group">
+                    <span class="slider-label">Cor</span>
+                    <input type="range" min="0" max="360" value="0" class="custom-slider" id="hueSlider" oninput="updateCustomColor()">
+                </div>
+                <div class="slider-group">
+                    <span class="slider-label">Intensidade</span>
+                    <input type="range" min="0" max="100" value="70" class="custom-slider" id="satSlider" oninput="updateCustomColor()">
+                </div>
+                <div class="slider-group">
+                    <span class="slider-label">Luminosidade</span>
+                    <input type="range" min="0" max="100" value="50" class="custom-slider" id="ligSlider" oninput="updateCustomColor()">
+                </div>
+
+                <button class="btn-confirm-style" style="width:100%; margin-top: 5px;" onclick="confirmCustomColor()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-card">
+    <div class="main-title-box" onclick="toggleMainContent()">
+        <h2>Orçamento para Impressão 3D em FDM</h2>
+    </div>
+    
+    <div id="mainContentWrapper">
+        <label>Impressora</label>
+        <select id="selMaquina" onchange="updateSeletores()">
+            <option value="" disabled selected>Selecionar...</option>
+        </select>
+        
+        <label>Filamento</label>
+        <select id="selFilamento" onchange="updateSeletores()">
+            <option value="" disabled selected>Selecionar...</option>
+        </select>
+        
+        <div class="side-by-side">
+            <div>
+                <label>Tempo de Impressão</label>
+                <input type="text" id="tempo" placeholder="Horas">
+            </div>
+            <div>
+                <label>Peso</label>
+                <input type="number" id="weight" step="1" placeholder="Gramas">
+            </div>
+        </div>
+        
+        <label>Fórmula de Cálculo</label>
+        <div class="formula-radios">
+            <div class="formula-opt">
+                <input type="radio" name="formulaType" id="ftType" value="type" onchange="toggleFormula()">
+                <label for="ftType">Tipo de Impressão</label>
+            </div>
+            <div class="formula-opt">
+                <input type="radio" name="formulaType" id="ftPercent" value="percent" onchange="toggleFormula()">
+                <label for="ftPercent">Porcentagem</label>
+            </div>
+        </div>
+
+        <div id="formulaContainer"></div>
+
+        <div class="extra-section">
+            <div class="extra-header-row">
+                <label style="margin:0;">Custos Adicionais</label>
+                <button class="btn-simple-toggle" id="btnToggleExtra" onclick="document.getElementById('extrasBox').toggleAttribute('open')">+</button>
+            </div>
+            
+            <div class="extras-chips-container" id="selectedExtrasContainer"></div>
+
+            <details id="extrasBox">
+                <summary></summary>
+                <div id="tempExtraRow" class="temp-add-row">
+                    <input type="text" id="newExtraName" class="suggest-edit-input" placeholder="Descrição">
+                    <input type="number" id="newExtraVal" class="suggest-edit-input" style="width:60px" placeholder="R$">
+                    <button class="btn-confirm-add" onclick="confirmAddExtra()">✔</button>
+                </div>
+
+                <div id="extrasListContent"></div>
+                
+                <div class="suggest-footer">
+                    <button type="button" class="btn-footer-suggest" onclick="showAddExtraInput()">+ Tipo de Custo</button>
+                    <button type="button" id="btnEditExtra" class="btn-footer-suggest" onclick="toggleEditExtra(event)">✎</button>
+                </div>
+            </details>
+        </div>
+        
+        <button class="btn-main" onclick="calcularVenda()">CALCULAR VALOR</button>
+        
+        <div class="result" id="resultado" style="display:none;">
+            <div class="result-title">Valor Sugerido:</div>
+            <span class="result-main-value" id="valorFinal">R$ 0,00</span>
+            
+            <div class="detail-row">
+                <span>Custo Operacional:</span>
+                <span id="resCustoOp">R$ 0,00</span>
+            </div>
+            <div class="detail-row">
+                <span>Custo do Material:</span>
+                <span id="resCustoMat">R$ 0,00</span>
+            </div>
+            <div class="detail-row" id="rowExtra" style="display:none;">
+                <span>Custos Adicionais:</span>
+                <span id="resCustoExtra">R$ 0,00</span>
+            </div>
+            <div class="detail-row total-custo">
+                <span>Custo de Produção:</span>
+                <span id="resCustoProd">R$ 0,00</span>
+            </div>
+        </div>
+
+        <div class="sub-section">
+            <div class="header-config">
+                <h3 style="margin:0; font-size: 14px;">Impressoras</h3>
+                <div class="header-btns">
+                    <button class="btn-icon-simple" id="btnEditMaq" onclick="toggleEditMaq(event)">✎</button>
+                    <button class="btn-icon-simple" id="btnAddMaq" onclick="toggleFormMaq(event)">+</button>
+                </div>
+            </div>
+            <table class="setup-table" id="tabMaq">
+                <thead id="headMaq"></thead>
+                <tbody id="bodyMaq"></tbody>
+            </table>
+            <div id="formMaq" class="form-novo" onclick="event.stopPropagation()">
+                <label>Marca*</label><input type="text" id="mMarca">
+                <label>Modelo*</label><input type="text" id="mModelo">
+                <label>Valor do Equipamento*</label><input type="number" id="mEquipVal">
+                <button class="btn-confirm-style" style="width:100%; margin-top:20px;" onclick="addMaq()">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="sub-section">
+            <div class="header-config">
+                <h3 style="margin:0; font-size: 14px;">Filamentos</h3>
+                <div class="header-btns">
+                    <button class="btn-icon-simple" id="btnEditFil" onclick="toggleEditFil(event)">✎</button>
+                    <button class="btn-icon-simple" id="btnAddFil" onclick="toggleFormFil(event)">+</button>
+                </div>
+            </div>
+            <table class="setup-table" id="tabFil">
+                <thead id="headFil"></thead>
+                <tbody id="bodyFil"></tbody>
+            </table>
+            <div id="formFil" class="form-novo" onclick="event.stopPropagation()">
+                <label>Marca</label><input type="text" id="fMarca">
+                <label>Material*</label><input type="text" id="fTipo">
+                <label>Preço do Kg*</label><input type="number" id="fPreco">
+                <label>Risco de Perda</label>
+                <div class="selector-row" onclick="document.getElementById('suggestBox').toggleAttribute('open')">
+                    <span id="riscoAtualTexto">0%</span>
+                    <input type="hidden" id="fRisco" value="0">
+                    <div class="arrow-down"></div>
+                </div>
+                <details id="suggestBox">
+                    <summary></summary>
+                    <div id="tempRiskRow" class="temp-add-row">
+                        <input type="text" id="newRiskName" class="suggest-edit-input" placeholder="Material">
+                        <input type="number" id="newRiskVal" class="suggest-edit-input" style="width:60px" placeholder="%">
+                        <button class="btn-confirm-add" onclick="confirmAddRisk()">✔</button>
+                    </div>
+                    <div id="suggestListContent"></div>
+                    <div class="suggest-footer">
+                        <button type="button" class="btn-footer-suggest" onclick="showAddRiskInput()">+ Risco Por Material</button>
+                        <button type="button" id="btnEditSug" class="btn-footer-suggest" onclick="toggleEditSuggest(event)">✎</button>
+                    </div>
+                </details>
+                <button class="btn-confirm-style" style="width:100%; margin-top:20px;" onclick="addFil()">Adicionar</button>
+            </div>
+        </div>
+
+    </div> </div>
+
+<script>
+    function downloadApp() {
+        // Pega o código fonte atual
+        const htmlContent = document.documentElement.outerHTML;
+        
+        // Cria um objeto Blob
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        
+        // Cria um link temporário
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        // Configura o link
+        a.href = url;
+        a.download = 'orcamento3d_offline.html';
+        
+        // Simula o clique e limpa
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+    }
+
+    /* --- LÓGICA DE TEMA E CORES --- */
+    const colors = ['#2ecc71', '#3498db', '#9b59b6', '#e67e22', '#e74c3c'];
+    let tempCustomColor = '';
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme_v50') || 'dark';
+        const savedColor = localStorage.getItem('color_v50') || colors[0];
+        setTheme(savedTheme);
+        setColor(savedColor);
+    }
+
+    function toggleSettings(e) {
+        e.stopPropagation();
+        document.getElementById('settingsMenu').classList.toggle('open');
+    }
+
+    function setTheme(mode) {
+        document.body.classList.toggle('light-mode', mode === 'light');
+        document.getElementById('themeDark').classList.toggle('active', mode === 'dark');
+        document.getElementById('themeLight').classList.toggle('active', mode === 'light');
+        localStorage.setItem('theme_v50', mode);
+    }
+
+    function setColor(color) {
+        document.documentElement.style.setProperty('--primary', color);
+        localStorage.setItem('color_v50', color);
+        renderColorGrid(color);
+    }
+
+    function renderColorGrid(activeColor) {
+        const container = document.getElementById('colorGrid');
+        container.innerHTML = '';
+        
+        colors.forEach(c => {
+            const div = document.createElement('div');
+            div.className = `color-swatch ${c === activeColor ? 'active' : ''}`;
+            div.style.backgroundColor = c;
+            div.onclick = () => setColor(c);
+            container.appendChild(div);
+        });
+
+        // Botão +
+        const customBtn = document.createElement('div');
+        customBtn.className = 'color-swatch custom-picker-btn';
+        
+        if (!colors.includes(activeColor)) {
+            customBtn.classList.add('active');
+            customBtn.style.backgroundColor = activeColor;
+            customBtn.style.color = 'transparent';
+            customBtn.style.border = '2px solid var(--text)';
+        } else {
+            customBtn.innerHTML = '<span>+</span>';
+        }
+
+        customBtn.onclick = (e) => {
+            e.stopPropagation();
+            openCustomColorModal();
+        };
+        
+        container.appendChild(customBtn);
+    }
+
+    function openCustomColorModal() {
+        const modal = document.getElementById('customColorModal');
+        // Valores Iniciais
+        document.getElementById('hueSlider').value = 0;
+        document.getElementById('satSlider').value = 70;
+        document.getElementById('ligSlider').value = 50;
+        updateCustomColor();
+        modal.classList.add('open');
+    }
+
+    function updateCustomColor() {
+        const h = document.getElementById('hueSlider').value;
+        const s = document.getElementById('satSlider').value;
+        const l = document.getElementById('ligSlider').value;
+        
+        const color = `hsl(${h}, ${s}%, ${l}%)`;
+        tempCustomColor = color;
+        document.getElementById('colorPreview').style.backgroundColor = color;
+
+        // Atualiza gradientes
+        document.getElementById('satSlider').style.background = `linear-gradient(to right, #888, hsl(${h}, 100%, 50%))`;
+        document.getElementById('ligSlider').style.background = `linear-gradient(to right, #000, hsl(${h}, 100%, 50%), #fff)`;
+    }
+
+    function confirmCustomColor() {
+        if(tempCustomColor) {
+            setColor(tempCustomColor);
+        }
+        document.getElementById('customColorModal').classList.remove('open');
+    }
+
+    /* --- EXPANDIR/RECOLHER CONTEÚDO --- */
+    function toggleMainContent() {
+        const wrapper = document.getElementById('mainContentWrapper');
+        if (wrapper.classList.contains('collapsed')) {
+            wrapper.classList.remove('collapsed');
+        } else {
+            wrapper.classList.add('collapsed');
+        }
+    }
+
+    /* --- VARIÁVEIS DO SISTEMA --- */
+    let isEditMaq = false, isEditFil = false, isEditSug = false, isEditExtra = false;
+    let maquinas = JSON.parse(localStorage.getItem('maq3d_v50')) || [];
+    let filamentos = JSON.parse(localStorage.getItem('fil3d_v50')) || [];
+    let sugestoesRiscos = JSON.parse(localStorage.getItem('sug_riscos_v50')) || [];
+    let extrasList = JSON.parse(localStorage.getItem('extras_list_v50')) || [];
+    let selectedExtras = [];
+
+    const formatBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
+
+    function initCalculator() {
+        document.getElementById('tempo').value = '';
+        document.getElementById('weight').value = '';
+        document.getElementById('resultado').style.display = 'none';
+        
+        const radios = document.getElementsByName('formulaType');
+        radios.forEach(r => r.checked = false);
+        toggleFormula(); 
+
+        selectedExtras = [];
+        initTheme();
+        render();
+    }
+
+    function render() {
+        renderTabela('Maq', maquinas, ['marca', 'modelo', 'valorEquip', 'custoOp'], isEditMaq);
+        renderTabela('Fil', filamentos, ['marca', 'tipo', 'preco', 'risco', 'total'], isEditFil);
+        renderSugestoes();
+        renderExtrasMenu();
+        renderSelectedExtras();
+        updateSeletores();
+        updateButtonStates();
+        
+        localStorage.setItem('maq3d_v50', JSON.stringify(maquinas));
+        localStorage.setItem('fil3d_v50', JSON.stringify(filamentos));
+        localStorage.setItem('sug_riscos_v50', JSON.stringify(sugestoesRiscos));
+        localStorage.setItem('extras_list_v50', JSON.stringify(extrasList));
+    }
+
+    function toggleFormula() {
+        const checked = document.querySelector('input[name="formulaType"]:checked');
+        const container = document.getElementById('formulaContainer');
+        
+        if (!checked) {
+            container.innerHTML = ''; 
+            return;
+        }
+
+        const type = checked.value;
+        if (type === 'type') {
+            container.innerHTML = `
+                <select id="selMargem">
+                    <option value="2.5" selected>Peça Simples ou até 6H</option>
+                    <option value="3.0">Peça Normal ou 6-12h</option>
+                    <option value="3.5">Peça Complexa ou 12-24h</option>
+                    <option value="4.0">Peça Critica ou +24H</option>
+                </select>
+                <div class="helper-text">*Valores padronizados.</div>`;
+        } else {
+            container.innerHTML = `
+                <div style="position: relative;">
+                    <input type="number" id="inputMargemPercent" placeholder="" style="padding-right: 30px;">
+                    <span style="position: absolute; right: 15px; top: 12px; color: #888;">%</span>
+                </div>
+                <div class="helper-text">*Porcentagem sobre custos de produção.</div>`;
+        }
+    }
+
+    function updateButtonStates() {
+        const btnMaq = document.getElementById('btnEditMaq');
+        const btnFil = document.getElementById('btnEditFil');
+        
+        btnMaq.innerHTML = isEditMaq ? '✔' : '✎';
+        btnFil.innerHTML = isEditFil ? '✔' : '✎';
+    }
+
+    /* --- LÓGICA DE EXTRAS COM INPUT TEMPORÁRIO --- */
+    function renderExtrasMenu() {
+        const container = document.getElementById('extrasListContent'); 
+        container.innerHTML = '';
+        extrasList.forEach((item, idx) => {
+            const div = document.createElement('div'); div.className = 'suggest-item-row';
+            if(isEditExtra) {
+                div.innerHTML = `
+                    <div style="flex-grow:1; padding:10px; display:flex; gap:5px">
+                        <input class="suggest-edit-input" value="${item.nome}" onchange="updExtra(${idx}, 'nome', this.value)">
+                        <input class="suggest-edit-input" style="width:70px" type="number" value="${item.valor}" onchange="updExtra(${idx}, 'valor', this.value)">
+                    </div>
+                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="remExtra(event, ${idx})">✕</button></div></div>`;
+            } else {
+                const isSelected = selectedExtras.includes(idx);
+                div.innerHTML = `
+                    <div class="suggest-data ${isSelected ? 'selected' : ''}" onclick="toggleSelectExtra(${idx})">
+                        <span>${item.nome}</span><strong>${formatBRL(item.valor)}</strong>
+                    </div>`;
+            }
+            container.appendChild(div);
+        });
+        
+        const btn = document.getElementById('btnEditExtra');
+        btn.innerHTML = isEditExtra ? '✔' : '✎';
+        btn.classList.toggle('active', isEditExtra);
+    }
+
+    function showAddExtraInput() {
+        document.getElementById('tempExtraRow').classList.add('active');
+        document.getElementById('newExtraName').focus();
+    }
+
+    function confirmAddExtra() {
+        const name = document.getElementById('newExtraName').value;
+        const val = parseFloat(document.getElementById('newExtraVal').value);
+        if (name && !isNaN(val)) {
+            extrasList.push({nome: name, valor: val});
+            document.getElementById('newExtraName').value = '';
+            document.getElementById('newExtraVal').value = '';
+            document.getElementById('tempExtraRow').classList.remove('active');
+            render();
+        } else {
+            alert("Preencha descrição e valor.");
+        }
+    }
+
+    function renderSelectedExtras() {
+        const container = document.getElementById('selectedExtrasContainer');
+        container.innerHTML = '';
+        if(selectedExtras.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        container.style.display = 'flex';
+        selectedExtras.forEach(idx => {
+            if (!extrasList[idx]) return; 
+            const chip = document.createElement('div');
+            chip.className = 'extra-chip';
+            chip.innerHTML = `${extrasList[idx].nome} <span>${formatBRL(extrasList[idx].valor)}</span> <span class="extra-chip-rm" onclick="toggleSelectExtra(${idx})">✕</span>`;
+            container.appendChild(chip);
+        });
+    }
+
+    function toggleEditExtra(e) { e.stopPropagation(); isEditExtra = !isEditExtra; document.getElementById('tempExtraRow').classList.remove('active'); render(); }
+    function updExtra(i, c, v) { extrasList[i][c] = c === 'valor' ? parseFloat(v) : v; render(); }
+    
+    function remExtra(e, i) { 
+        e.stopPropagation(); 
+        if(confirm("Excluir este item?")) { 
+            extrasList.splice(i,1); 
+            selectedExtras = selectedExtras.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx); 
+            render(); 
+        } 
+    }
+    
+    function toggleSelectExtra(idx) {
+        if (selectedExtras.includes(idx)) {
+            selectedExtras = selectedExtras.filter(i => i !== idx);
+        } else {
+            selectedExtras.push(idx);
+        }
+        render(); 
+    }
+
+    /* --- LÓGICA DE RISCOS COM INPUT TEMPORÁRIO --- */
+    function renderSugestoes() {
+        const container = document.getElementById('suggestListContent'); container.innerHTML = '';
+        sugestoesRiscos.forEach((s, idx) => {
+            const div = document.createElement('div'); div.className = 'suggest-item-row';
+            if(isEditSug) {
+                div.innerHTML = `<div class="col-ctrl"><div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDragSug(event, ${idx})">☰</span></div></div>
+                    <div style="flex-grow:1; padding:10px; display:flex; gap:5px">
+                        <input class="suggest-edit-input" value="${s.nome}" onchange="updSug(${idx}, 'nome', this.value)">
+                        <input class="suggest-edit-input" style="width:40px" type="number" value="${s.risco}" onchange="updSug(${idx}, 'risco', this.value)">%
+                    </div>
+                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="remSug(event, ${idx})">✕</button></div></div>`;
+            } else {
+                div.innerHTML = `<div class="suggest-data" onclick="setRisco(${s.risco})"><span>${s.nome}</span><strong>${s.risco}%</strong></div>`;
+            }
+            container.appendChild(div);
+        });
+        const btn = document.getElementById('btnEditSug');
+        btn.innerHTML = isEditSug ? '✔' : '✎';
+        btn.classList.toggle('active', isEditSug);
+    }
+
+    function showAddRiskInput() {
+        document.getElementById('tempRiskRow').classList.add('active');
+        document.getElementById('newRiskName').focus();
+    }
+
+    function confirmAddRisk() {
+        const name = document.getElementById('newRiskName').value;
+        const val = parseFloat(document.getElementById('newRiskVal').value);
+        if (name && !isNaN(val)) {
+            sugestoesRiscos.push({nome: name, risco: val});
+            document.getElementById('newRiskName').value = '';
+            document.getElementById('newRiskVal').value = '';
+            document.getElementById('tempRiskRow').classList.remove('active');
+            render();
+        } else {
+            alert("Preencha material e porcentagem.");
+        }
+    }
+
+    function toggleEditSuggest(e) { e.stopPropagation(); isEditSug = !isEditSug; document.getElementById('tempRiskRow').classList.remove('active'); renderSugestoes(); }
+    function updSug(i, c, v) { sugestoesRiscos[i][c] = c === 'risco' ? parseFloat(v) : v; }
+    function remSug(e, i) { e.stopPropagation(); if(confirm("Excluir risco?")) { sugestoesRiscos.splice(i,1); renderSugestoes(); } }
+    
+    function setRisco(val) { 
+        document.getElementById('fRisco').value = val; 
+        document.getElementById('riscoAtualTexto').innerText = val + '%'; 
+        document.getElementById('suggestBox').removeAttribute('open'); 
+    }
+
+    /* --- CÁLCULO E TABELAS GERAIS --- */
+    function calcularVenda() {
+        const selM = document.getElementById('selMaquina'), selF = document.getElementById('selFilamento');
+        if (!selM.value || !selF.value) { alert("Selecione a Impressora e o Filamento."); return; }
+
+        const hVal = parseFloat(selM.value);
+        const gVal = parseFloat(selF.value);
+        const t = parseTempo(document.getElementById('tempo').value);
+        const p = parseFloat(document.getElementById('weight').value) || 0;
+        
+        const totalCustoOp = t * hVal;
+        const totalCustoMat = p * gVal;
+        const custoProducao = totalCustoOp + totalCustoMat;
+        
+        const checked = document.querySelector('input[name="formulaType"]:checked');
+        if(!checked) { alert("Selecione uma Fórmula de Cálculo."); return; }
+        
+        const formulaType = checked.value;
+        let valorComLucro = 0;
+        
+        if (formulaType === 'type') {
+            const margem = parseFloat(document.getElementById('selMargem').value);
+            valorComLucro = custoProducao * margem;
+        } else {
+            const perc = parseFloat(document.getElementById('inputMargemPercent').value) || 0;
+            valorComLucro = custoProducao * (1 + (perc / 100));
+        }
+
+        let totalExtras = 0;
+        selectedExtras.forEach(idx => {
+            if(extrasList[idx]) totalExtras += extrasList[idx].valor;
+        });
+
+        const valorFinal = valorComLucro + totalExtras;
+        
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('valorFinal').innerText = formatBRL(valorFinal);
+        document.getElementById('resCustoOp').innerText = formatBRL(totalCustoOp);
+        document.getElementById('resCustoMat').innerText = formatBRL(totalCustoMat);
+        document.getElementById('resCustoProd').innerText = formatBRL(custoProducao);
+        
+        const extraRow = document.getElementById('rowExtra');
+        if(totalExtras > 0) {
+            extraRow.style.display = 'flex';
+            document.getElementById('resCustoExtra').innerText = formatBRL(totalExtras);
+        } else {
+            extraRow.style.display = 'none';
+        }
+    }
+
+    function parseTempo(input) {
+        input = input.toLowerCase().replace(',', '.').trim();
+        if (input.includes('h') || input.includes('m')) {
+            let horas = 0, minutos = 0;
+            const hMatch = input.match(/(\d+)\s*h/);
+            const mMatch = input.match(/(\d+)\s*m/);
+            if (hMatch) horas = parseInt(hMatch[1]);
+            if (mMatch) minutos = parseInt(mMatch[1]);
+            if (!hMatch && !mMatch && input.includes('h')) {
+                let parts = input.split('h');
+                horas = parseInt(parts[0]) || 0;
+                minutos = parseInt(parts[1]) || 0;
+            }
+            return horas + (minutos / 60);
+        }
+        return parseFloat(input) || 0;
+    }
+
+    function renderTabela(id, dados, cols, editMode) {
+        const head = document.getElementById('head'+id), body = document.getElementById('body'+id);
+        head.innerHTML = ''; body.innerHTML = '';
+        if (dados.length === 0 && !editMode) return;
+        const thr = head.insertRow();
+        if(editMode) { const thL = document.createElement('th'); thL.className='col-ctrl'; thr.appendChild(thL); }
+        cols.forEach(c => { 
+            const th = document.createElement('th'); 
+            const nMaq = {marca:'Marca', modelo:'Modelo', valorEquip:'Valor do Equipamento', custoOp:'Custo Operacional'};
+            const nFil = {marca:'Marca', tipo:'Material', preco:'Preço', risco:'Risco de Perda', total:'Custo do Material'};
+            th.innerText = id === 'Maq' ? nMaq[c] : nFil[c];
+            thr.appendChild(th); 
+        });
+        if(editMode) { const thR = document.createElement('th'); thR.className='col-ctrl'; thr.appendChild(thR); }
+        dados.forEach((item, idx) => {
+            const row = body.insertRow();
+            if(editMode) {
+                const tdL = row.insertCell(); tdL.className = 'col-ctrl';
+                tdL.innerHTML = `<div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDrag(event, '${id}', ${idx})">☰</span></div>`;
+            }
+            cols.forEach(c => {
+                const td = row.insertCell();
+                if(editMode) {
+                    if(c==='custoOp'||c==='total') {
+                        const val = id==='Maq' ? item.custoOp : (item.preco/1000 * (1+item.risco/100));
+                        td.innerHTML = `<input value="${formatBRL(val)}${id==='Maq'?'/h':'/g'}" readonly>`;
+                    } else {
+                        const type = (c==='marca'||c==='modelo'||c==='tipo') ? 'text' : 'number';
+                        td.innerHTML = `<input type="${type}" value="${item[c]}" onchange="updItem('${id}', ${idx}, '${c}', this.value)">`;
+                    }
+                } else {
+                    if(c==='custoOp') td.innerHTML = `<span class="highlight">${formatBRL(item.custoOp)}/h</span>`;
+                    else if(c==='total') td.innerHTML = `<span class="highlight">${formatBRL((item.preco/1000 * (1+item.risco/100)))}/g</span>`;
+                    else if(c==='preco' && id==='Fil') td.innerHTML = `<span>${formatBRL(item[c])}/kg</span>`;
+                    else if(c==='risco' && id==='Fil') td.innerHTML = `<span>${item[c]}%</span>`;
+                    else if(typeof item[c]==='number') td.innerText = formatBRL(item[c]);
+                    else td.innerText = item[c];
+                }
+            });
+            if(editMode) {
+                const tdR = row.insertCell(); tdR.className = 'col-ctrl';
+                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="removerItem('${id}', ${idx})">✕</button></div>`;
+            }
+        });
+    }
+
+    function updateSeletores() {
+        const sM = document.getElementById('selMaquina'), sF = document.getElementById('selFilamento');
+        if(!sM || !sF) return;
+        const valM = sM.value, valF = sF.value;
+        sM.innerHTML = valM === "" ? '<option value="" disabled selected>Selecionar...</option>' : '';
+        sF.innerHTML = valF === "" ? '<option value="" disabled selected>Selecionar...</option>' : '';
+        maquinas.forEach(m => sM.innerHTML += `<option value="${m.custoOp}" ${valM == m.custoOp ? 'selected' : ''}>${m.marca} ${m.modelo}</option>`);
+        filamentos.forEach(f => sF.innerHTML += `<option value="${(f.preco/1000)*(1+f.risco/100)}" ${valF == ((f.preco/1000)*(1+f.risco/100)) ? 'selected' : ''}>${(f.marca?f.marca+' ': '')+f.tipo}</option>`);
+    }
+
+    function limparCampos() { ['mMarca', 'mModelo', 'mEquipVal', 'fMarca', 'fTipo', 'fPreco'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); document.getElementById('fRisco').value = 0; document.getElementById('riscoAtualTexto').innerText = '0%'; document.getElementById('suggestBox').removeAttribute('open'); isEditSug = false; renderSugestoes(); }
+    function startDragSug(e, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 40) { let dir = diff > 0 ? 1 : -1; let n = idx + dir; if(n>=0 && n<sugestoesRiscos.length) { [sugestoesRiscos[idx], sugestoesRiscos[n]] = [sugestoesRiscos[n], sugestoesRiscos[idx]]; idx = n; startY = ev.clientY; renderSugestoes(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
+    function startDrag(e, id, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 45) { let dir = diff > 0 ? 1 : -1; let a = id==='Maq'?maquinas:filamentos; let n = idx + dir; if(n>=0 && n<a.length) { [a[idx], a[n]] = [a[n], a[idx]]; idx = n; startY = ev.clientY; render(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
+    function updItem(id, idx, campo, val) { const arr = id==='Maq'?maquinas:filamentos; arr[idx][campo] = isNaN(val)||val==='' ? v : parseFloat(val); if(id==='Maq'&&campo==='valorEquip') arr[idx].custoOp = arr[idx][campo]*0.001; render(); }
+    function addMaq() { const v = parseFloat(document.getElementById('mEquipVal').value); if(!document.getElementById('mMarca').value || isNaN(v)) return; maquinas.push({marca:document.getElementById('mMarca').value, modelo:document.getElementById('mModelo').value, valorEquip:v, custoOp:v*0.001}); document.getElementById('formMaq').style.display='none'; limparCampos(); render(); }
+    function addFil() { const p = parseFloat(document.getElementById('fPreco').value); if(!document.getElementById('fTipo').value || isNaN(p)) return; filamentos.push({marca:document.getElementById('fMarca').value, tipo:document.getElementById('fTipo').value, preco:p, risco:parseFloat(document.getElementById('fRisco').value)||0}); document.getElementById('formFil').style.display='none'; limparCampos(); render(); }
+    function removerItem(id, idx) { if(confirm("Excluir?")) { (id==='Maq'?maquinas:filamentos).splice(idx,1); render(); } }
+    function toggleEditMaq(e) { e.stopPropagation(); if (maquinas.length === 0 && !isEditMaq) return; isEditMaq = !isEditMaq; render(); }
+    function toggleEditFil(e) { e.stopPropagation(); if (filamentos.length === 0 && !isEditFil) return; isEditFil = !isEditFil; render(); }
+    function toggleFormMaq(e) { e.stopPropagation(); document.getElementById('formMaq').style.display = 'block'; }
+    function toggleFormFil(e) { e.stopPropagation(); document.getElementById('formFil').style.display = 'block'; }
+    
+    function fecharModais(e) { 
+        const settingsMenu = document.getElementById('settingsMenu');
+        if (settingsMenu.classList.contains('open') && !e.target.closest('.top-bar')) {
+            settingsMenu.classList.remove('open');
+        }
+        
+        const colorModal = document.getElementById('customColorModal');
+        if (colorModal.classList.contains('open') && !e.target.closest('#settingsMenu')) {
+            colorModal.classList.remove('open');
+        }
+
+        const fMaq = document.getElementById('formMaq');
+        const bMaq = document.getElementById('btnAddMaq');
+        if (fMaq.style.display === 'block' && !e.target.closest('#formMaq') && e.target !== bMaq) {
+            fMaq.style.display = 'none';
+            limparCampos();
+        }
+
+        const fFil = document.getElementById('formFil');
+        const bFil = document.getElementById('btnAddFil');
+        if (fFil.style.display === 'block' && !e.target.closest('#formFil') && e.target !== bFil) {
+            fFil.style.display = 'none';
+            limparCampos();
+        }
+        
+        if (isEditMaq && !e.target.closest('#tabMaq') && !e.target.closest('#btnEditMaq')) { isEditMaq = false; render(); }
+        if (isEditFil && !e.target.closest('#tabFil') && !e.target.closest('#btnEditFil')) { isEditFil = false; render(); }
+        
+        const extrasBox = document.getElementById('extrasBox');
+        const btnToggleExtra = document.getElementById('btnToggleExtra');
+        if (extrasBox.hasAttribute('open') && !e.target.closest('#extrasBox') && e.target !== btnToggleExtra) {
+            extrasBox.removeAttribute('open');
+            document.getElementById('tempExtraRow').classList.remove('active');
+            isEditExtra = false; 
+            render();
+        }
+
+        const suggestBox = document.getElementById('suggestBox');
+        if (suggestBox.hasAttribute('open') && !e.target.closest('#suggestBox') && !e.target.closest('.selector-row')) {
+           suggestBox.removeAttribute('open');
+           document.getElementById('tempRiskRow').classList.remove('active');
+           isEditSug = false;
+           renderSugestoes();
+        }
+    }
+
+    document.addEventListener('click', fecharModais);
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            isEditMaq = false; isEditFil = false; isEditSug = false; isEditExtra = false;
+            document.getElementById('formMaq').style.display = 'none';
+            document.getElementById('formFil').style.display = 'none';
+            document.getElementById('extrasBox').removeAttribute('open');
+            document.getElementById('suggestBox').removeAttribute('open');
+            document.getElementById('tempExtraRow').classList.remove('active');
+            document.getElementById('tempRiskRow').classList.remove('active');
+            document.getElementById('settingsMenu').classList.remove('open');
+            document.getElementById('customColorModal').classList.remove('open');
+            limparCampos();
+            render();
+        }
+    });
+
+    initCalculator();
+</script>
+</body>
+</html>
