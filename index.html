@@ -42,19 +42,40 @@
         
         button, input, select { touch-action: manipulation; }
 
-        /* --- TOP BAR NEUTRA --- */
+        /* --- TOP BAR --- */
         .top-bar { 
             width: 100%; max-width: 520px; 
-            display: flex; justify-content: flex-end; 
-            margin-bottom: 10px; position: relative; 
-            gap: 5px; 
+            height: 45px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin-bottom: 10px; 
+            position: relative; 
+        }
+
+        .app-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+            user-select: none;
+        }
+
+        .header-actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
             align-items: center;
+            gap: 5px;
         }
         
-        /* Botões de Ícone (SVG) */
         .gear-btn { 
             background: none; border: none; 
-            cursor: pointer; color: #888; /* Cor neutra inicial */
+            cursor: pointer; color: #888; 
             padding: 8px; 
             display: flex; align-items: center; justify-content: center;
             border-radius: 50%;
@@ -71,11 +92,10 @@
         }
 
         .gear-btn:hover { 
-            color: var(--text); /* Acende na cor do texto do tema */
+            color: var(--text); 
             background-color: rgba(128, 128, 128, 0.1); 
         }
 
-        /* Animação específica para a engrenagem */
         .gear-rotate:hover svg { 
             transform: rotate(90deg); 
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -92,12 +112,10 @@
         .settings-section { margin-bottom: 15px; }
         .settings-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
         
-        /* Toggle Tema */
         .theme-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 2px; cursor: pointer; }
         .theme-opt { flex: 1; text-align: center; padding: 6px; font-size: 12px; border-radius: 18px; transition: 0.2s; color: var(--text); }
         .theme-opt.active { background: var(--card); box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold; }
 
-        /* Grid de Cores */
         .color-grid { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; align-items: center; }
         .color-swatch { 
             width: 28px; height: 28px; border-radius: 50%; cursor: pointer; 
@@ -107,7 +125,6 @@
         .color-swatch:hover { transform: scale(1.1); }
         .color-swatch.active { border-color: var(--text); transform: scale(1.1); }
 
-        /* Botão + Personalizado */
         .custom-picker-btn {
             background: var(--input-bg); border: 1px dashed #888;
             color: #888; font-size: 18px; font-weight: bold;
@@ -117,7 +134,6 @@
         .custom-picker-btn:hover { border-color: var(--text); color: var(--text); }
         .custom-picker-btn span { display: block; margin-top: -2px; }
 
-        /* Modal de Cor Personalizada */
         .custom-color-modal {
             display: none; position: absolute; top: 100%; right: 0; margin-top: 10px;
             background: var(--card); border: 1px solid var(--border);
@@ -143,7 +159,6 @@
         #satSlider { background: linear-gradient(to right, #888, var(--primary)); }
         #ligSlider { background: linear-gradient(to right, #000, var(--primary), #fff); }
 
-        /* Main Styles */
         .main-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 520px; margin-bottom: 20px; box-sizing: border-box; transition: background 0.3s; }
         .main-title-box { cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding-bottom: 10px; }
         h2 { text-align: center; color: var(--primary); margin: 0; font-size: 22px; }
@@ -170,7 +185,19 @@
         .btn-icon-simple { background: none; border: none; color: var(--primary); font-size: 24px; cursor: pointer; font-weight: bold; padding: 5px; line-height: 1; transition: opacity 0.2s; }
         .btn-icon-simple:hover { opacity: 0.8; }
         
-        .btn-icon-danger { color: var(--danger); font-size: 16px; cursor: pointer; font-weight: bold; }
+        /* Botão X Neutro Simplificado */
+        .btn-icon-neutral { 
+            background: none; border: none; 
+            color: #888; /* Cor neutra */
+            font-size: 20px; 
+            cursor: pointer; 
+            line-height: 1; 
+            padding: 0;
+            transition: color 0.2s; 
+        }
+        .btn-icon-neutral:hover { color: var(--danger); } /* Feedback vermelho suave ao passar o mouse */
+        
+        .btn-icon-danger { color: var(--danger); font-size: 16px; cursor: pointer; font-weight: bold; } /* Usado em outros lugares se precisar */
         
         .btn-icon-drag { color: var(--text); opacity: 0.5; font-size: 18px; cursor: grab; touch-action: none; }
 
@@ -237,20 +264,24 @@
 <body>
 
 <div class="top-bar">
-    <button class="gear-btn" onclick="downloadApp()" title="Baixar Offline">
-        <svg viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-    </button>
-    
-    <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações">
-        <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-    </button>
+    <h1 class="app-title">Guias para Orçamento</h1>
+
+    <div class="header-actions">
+        <button class="gear-btn" onclick="downloadApp()" title="Trabalhar Offline">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        </button>
+        
+        <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+    </div>
     
     <div id="settingsMenu" class="settings-menu" onclick="event.stopPropagation()">
         <div class="settings-section">
@@ -268,7 +299,6 @@
             <div id="customColorModal" class="custom-color-modal" onclick="event.stopPropagation()">
                 <div class="settings-title" style="align-self: flex-start; margin-bottom:5px;">Personalizar</div>
                 <div id="colorPreview" class="color-preview-box"></div>
-                
                 <div class="slider-group">
                     <span class="slider-label">Cor</span>
                     <input type="range" min="0" max="360" value="0" class="custom-slider" id="hueSlider" oninput="updateCustomColor()">
@@ -281,7 +311,6 @@
                     <span class="slider-label">Luminosidade</span>
                     <input type="range" min="0" max="100" value="50" class="custom-slider" id="ligSlider" oninput="updateCustomColor()">
                 </div>
-
                 <button class="btn-confirm-style" style="width:100%; margin-top: 5px;" onclick="confirmCustomColor()">Confirmar</button>
             </div>
         </div>
@@ -290,7 +319,7 @@
 
 <div class="main-card">
     <div class="main-title-box" onclick="toggleMainContent()">
-        <h2>Orçamento para Impressão 3D em FDM</h2>
+        <h2>Impressão 3D em FDM</h2>
     </div>
     
     <div id="mainContentWrapper">
@@ -437,25 +466,38 @@
             </div>
         </div>
 
-    </div> </div>
+    </div>
+</div>
 
 <script>
-    function downloadApp() {
-        // Pega o código fonte atual
+    async function downloadApp() {
         const htmlContent = document.documentElement.outerHTML;
-        
-        // Cria um objeto Blob
         const blob = new Blob([htmlContent], { type: 'text/html' });
-        
-        // Cria um link temporário
+        const defaultName = 'Guias para Orçamento.html';
+
+        if (window.showSaveFilePicker) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: defaultName,
+                    types: [{
+                        description: 'Arquivo HTML',
+                        accept: { 'text/html': ['.html'] },
+                    }],
+                });
+                const writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+                else return;
+            }
+        }
+
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        
-        // Configura o link
         a.href = url;
-        a.download = 'orcamento3d_offline.html';
-        
-        // Simula o clique e limpa
+        a.download = defaultName;
         document.body.appendChild(a);
         a.click();
         
@@ -506,7 +548,6 @@
             container.appendChild(div);
         });
 
-        // Botão +
         const customBtn = document.createElement('div');
         customBtn.className = 'color-swatch custom-picker-btn';
         
@@ -529,7 +570,6 @@
 
     function openCustomColorModal() {
         const modal = document.getElementById('customColorModal');
-        // Valores Iniciais
         document.getElementById('hueSlider').value = 0;
         document.getElementById('satSlider').value = 70;
         document.getElementById('ligSlider').value = 50;
@@ -546,7 +586,6 @@
         tempCustomColor = color;
         document.getElementById('colorPreview').style.backgroundColor = color;
 
-        // Atualiza gradientes
         document.getElementById('satSlider').style.background = `linear-gradient(to right, #888, hsl(${h}, 100%, 50%))`;
         document.getElementById('ligSlider').style.background = `linear-gradient(to right, #000, hsl(${h}, 100%, 50%), #fff)`;
     }
@@ -889,7 +928,8 @@
             });
             if(editMode) {
                 const tdR = row.insertCell(); tdR.className = 'col-ctrl';
-                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="removerItem('${id}', ${idx})">✕</button></div>`;
+                // Novo Botão X simplificado neutro
+                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-neutral" onclick="removerItem('${id}', ${idx})">✕</button></div>`;
             }
         });
     }
