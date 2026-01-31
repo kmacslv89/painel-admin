@@ -15,6 +15,7 @@
             --border: #444;
             --primary: #2ecc71; /* Cor de Destaque Padrão */
             --danger: #ff4757;
+            --shopee: #ee4d2d; /* Cor Shopee */
         }
 
         body.light-mode {
@@ -171,7 +172,7 @@
             line-height: 1; 
             transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
-            opacity: 1 !important; /* CORREÇÃO FINAL: Nunca fica fosco */
+            opacity: 1 !important;
         }
 
         /* Botão de Edição (Lápis) */
@@ -190,22 +191,20 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        /* Estado INATIVO (Hover) - Apenas um fundo cinza leve, SEM tirar brilho */
+        /* Estado INATIVO (Hover) */
         .btn-icon-simple:not(.btn-edit-active):hover {
             background-color: rgba(128, 128, 128, 0.1); 
             opacity: 1 !important;
         }
 
-        /* Hover no estado ATIVO - Mais brilho */
         .btn-edit-active:hover {
             filter: brightness(1.1);
         }
 
-        /* Hover genérico para outros ícones */
         .btn-icon-drag:hover,
         .btn-icon-delete:hover,
         .extra-chip-rm:hover {
-            opacity: 0.7 !important; /* Esses podem ter um leve feedback */
+            opacity: 0.7 !important;
         }
 
         .btn-confirm-style { background: var(--primary); color: #fff; border: none; border-radius: 4px; padding: 8px 15px; font-weight: bold; cursor: pointer; font-size: 14px; }
@@ -259,10 +258,49 @@
 
         .result { margin-top: 20px; padding: 20px; background: rgba(128, 128, 128, 0.05); border: 1px solid var(--primary); border-radius: 15px; text-align: center; }
         .result-title { font-size: 12px; color: #888; margin-bottom: 5px; }
-        .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 15px; }
+        .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 5px; } /* Ajustei margem inferior */
         .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--border); font-size: 12px; color: #888; }
         .detail-row.total-custo { color: var(--text); font-weight: bold; border-top: 1px solid var(--border); margin-top: 5px; padding-top: 8px; }
         
+        /* ESTILOS SHOPEE BOX */
+        .shopee-box {
+            margin: 0 0 20px 0;
+            padding: 12px;
+            background: rgba(238, 77, 45, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(238, 77, 45, 0.3);
+            text-align: center;
+        }
+        .shopee-title {
+            font-size: 10px;
+            color: var(--shopee);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .shopee-value-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .shopee-main-value {
+            font-size: 26px;
+            color: var(--shopee);
+            font-weight: bold;
+            line-height: 1;
+        }
+        .shopee-tag {
+            font-size: 11px;
+            background: var(--shopee);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(238, 77, 45, 0.3);
+        }
+
         .form-novo { display: none; background: var(--card); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed var(--border); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .helper-text { font-size: 11px; color: #777; margin-top: 5px; }
     </style>
@@ -271,50 +309,24 @@
 
 <div class="top-bar">
     <h1 class="app-title">Guias para Orçamento</h1>
-
     <div class="header-actions">
-        <button class="gear-btn" onclick="downloadApp()" title="Trabalhar Offline">
-            <svg viewBox="0 0 24 24">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-        </button>
-        <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações">
-            <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </button>
+        <button class="gear-btn" onclick="downloadApp()" title="Trabalhar Offline"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+        <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
     </div>
-    
     <div id="settingsMenu" class="settings-menu" onclick="event.stopPropagation()">
         <div class="settings-section">
             <div class="settings-title">Tema</div>
-            <div class="theme-toggle">
-                <div class="theme-opt active" id="themeDark" onclick="setTheme('dark')">Escuro</div>
-                <div class="theme-opt" id="themeLight" onclick="setTheme('light')">Claro</div>
-            </div>
+            <div class="theme-toggle"><div class="theme-opt active" id="themeDark" onclick="setTheme('dark')">Escuro</div><div class="theme-opt" id="themeLight" onclick="setTheme('light')">Claro</div></div>
         </div>
         <div class="settings-section" style="position: relative;">
             <div class="settings-title">Cor de Destaque</div>
             <div class="color-grid" id="colorGrid"></div>
-            
             <div id="customColorModal" class="custom-color-modal" onclick="event.stopPropagation()">
                 <div class="settings-title" style="align-self: flex-start; margin-bottom:5px;">Personalizar</div>
                 <div id="colorPreview" class="color-preview-box"></div>
-                <div class="slider-group">
-                    <span class="slider-label">Cor</span>
-                    <input type="range" min="0" max="360" value="0" class="custom-slider" id="hueSlider" oninput="updateCustomColor()">
-                </div>
-                <div class="slider-group">
-                    <span class="slider-label">Intensidade</span>
-                    <input type="range" min="0" max="100" value="70" class="custom-slider" id="satSlider" oninput="updateCustomColor()">
-                </div>
-                <div class="slider-group">
-                    <span class="slider-label">Luminosidade</span>
-                    <input type="range" min="0" max="100" value="50" class="custom-slider" id="ligSlider" oninput="updateCustomColor()">
-                </div>
+                <div class="slider-group"><span class="slider-label">Cor</span><input type="range" min="0" max="360" value="0" class="custom-slider" id="hueSlider" oninput="updateCustomColor()"></div>
+                <div class="slider-group"><span class="slider-label">Intensidade</span><input type="range" min="0" max="100" value="70" class="custom-slider" id="satSlider" oninput="updateCustomColor()"></div>
+                <div class="slider-group"><span class="slider-label">Luminosidade</span><input type="range" min="0" max="100" value="50" class="custom-slider" id="ligSlider" oninput="updateCustomColor()"></div>
                 <button class="btn-confirm-style" style="width:100%; margin-top: 5px;" onclick="confirmCustomColor()">Confirmar</button>
             </div>
         </div>
@@ -328,38 +340,20 @@
     
     <div id="mainContentWrapper">
         <label>Impressora</label>
-        <select id="selMaquina" onchange="updateSeletores()">
-            <option value="" disabled selected>Selecionar...</option>
-        </select>
-        
+        <select id="selMaquina" onchange="updateSeletores()"><option value="" disabled selected>Selecionar...</option></select>
         <label>Filamento</label>
-        <select id="selFilamento" onchange="updateSeletores()">
-            <option value="" disabled selected>Selecionar...</option>
-        </select>
+        <select id="selFilamento" onchange="updateSeletores()"><option value="" disabled selected>Selecionar...</option></select>
         
         <div class="side-by-side">
-            <div>
-                <label>Tempo de Impressão</label>
-                <input type="text" id="tempo" placeholder="Horas">
-            </div>
-            <div>
-                <label>Peso</label>
-                <input type="number" id="weight" step="1" placeholder="Gramas">
-            </div>
+            <div><label>Tempo de Impressão</label><input type="text" id="tempo" placeholder="Ex: 1:30, 90m, 1h30min ou 1.5"></div>
+            <div><label>Peso</label><input type="number" id="weight" step="1" placeholder="Gramas"></div>
         </div>
         
         <label>Fórmula de Cálculo</label>
         <div class="formula-radios">
-            <div class="formula-opt">
-                <input type="radio" name="formulaType" id="ftType" value="type" onchange="toggleFormula()">
-                <label for="ftType">Tipo de Impressão</label>
-            </div>
-            <div class="formula-opt">
-                <input type="radio" name="formulaType" id="ftPercent" value="percent" onchange="toggleFormula()">
-                <label for="ftPercent">Porcentagem</label>
-            </div>
+            <div class="formula-opt"><input type="radio" name="formulaType" id="ftType" value="type" onchange="toggleFormula()"><label for="ftType">Tipo de Impressão</label></div>
+            <div class="formula-opt"><input type="radio" name="formulaType" id="ftPercent" value="percent" onchange="toggleFormula()"><label for="ftPercent">Porcentagem</label></div>
         </div>
-
         <div id="formulaContainer"></div>
 
         <div class="extra-section">
@@ -367,9 +361,7 @@
                 <label style="margin:0;">Custos Adicionais</label>
                 <button class="btn-simple-toggle" id="btnToggleExtra" onclick="document.getElementById('extrasBox').toggleAttribute('open')">+</button>
             </div>
-            
             <div class="extras-chips-container" id="selectedExtrasContainer"></div>
-
             <details id="extrasBox">
                 <summary></summary>
                 <div id="tempExtraRow" class="temp-add-row">
@@ -377,9 +369,7 @@
                     <input type="number" id="newExtraVal" class="suggest-edit-input" style="width:60px" placeholder="R$">
                     <button class="btn-confirm-add" onclick="confirmAddExtra()">✔</button>
                 </div>
-
                 <div id="extrasListContent"></div>
-                
                 <div class="suggest-footer">
                     <button type="button" class="btn-footer-suggest" onclick="showAddExtraInput()">+ Tipo de Custo</button>
                     <button type="button" id="btnEditExtra" class="btn-footer-suggest" onclick="toggleEditExtra(event)">✎</button>
@@ -393,36 +383,23 @@
             <div class="result-title">Valor Sugerido:</div>
             <span class="result-main-value" id="valorFinal">R$ 0,00</span>
             
-            <div class="detail-row">
-                <span>Custo Operacional:</span>
-                <span id="resCustoOp">R$ 0,00</span>
+            <div class="shopee-box">
+                <div class="shopee-title">Preço para Shopee (Taxas inclusas)</div>
+                <div class="shopee-value-row">
+                    <span class="shopee-main-value" id="valShopee">R$ 0,00</span>
+                    <span class="shopee-tag" id="tagShopee">+0%</span>
+                </div>
             </div>
-            <div class="detail-row">
-                <span>Custo do Material:</span>
-                <span id="resCustoMat">R$ 0,00</span>
-            </div>
-            <div class="detail-row" id="rowExtra" style="display:none;">
-                <span>Custos Adicionais:</span>
-                <span id="resCustoExtra">R$ 0,00</span>
-            </div>
-            <div class="detail-row total-custo">
-                <span>Custo de Produção:</span>
-                <span id="resCustoProd">R$ 0,00</span>
-            </div>
+
+            <div class="detail-row"><span>Custo Operacional:</span><span id="resCustoOp">R$ 0,00</span></div>
+            <div class="detail-row"><span>Custo do Material:</span><span id="resCustoMat">R$ 0,00</span></div>
+            <div class="detail-row" id="rowExtra" style="display:none;"><span>Custos Adicionais:</span><span id="resCustoExtra">R$ 0,00</span></div>
+            <div class="detail-row total-custo"><span>Custo de Produção:</span><span id="resCustoProd">R$ 0,00</span></div>
         </div>
 
         <div class="sub-section">
-            <div class="header-config">
-                <h3 style="margin:0; font-size: 14px;">Impressoras</h3>
-                <div class="header-btns">
-                    <button class="btn-icon-simple" id="btnEditMaq" onclick="toggleEditMaq(event)">✎</button>
-                    <button class="btn-icon-simple" id="btnAddMaq" onclick="toggleFormMaq(event)">+</button>
-                </div>
-            </div>
-            <table class="setup-table" id="tabMaq">
-                <thead id="headMaq"></thead>
-                <tbody id="bodyMaq"></tbody>
-            </table>
+            <div class="header-config"><h3 style="margin:0; font-size: 14px;">Impressoras</h3><div class="header-btns"><button class="btn-icon-simple" id="btnEditMaq" onclick="toggleEditMaq(event)">✎</button><button class="btn-icon-simple" id="btnAddMaq" onclick="toggleFormMaq(event)">+</button></div></div>
+            <table class="setup-table" id="tabMaq"><thead id="headMaq"></thead><tbody id="bodyMaq"></tbody></table>
             <div id="formMaq" class="form-novo" onclick="event.stopPropagation()">
                 <label>Marca*</label><input type="text" id="mMarca">
                 <label>Modelo*</label><input type="text" id="mModelo">
@@ -432,625 +409,128 @@
         </div>
 
         <div class="sub-section">
-            <div class="header-config">
-                <h3 style="margin:0; font-size: 14px;">Filamentos</h3>
-                <div class="header-btns">
-                    <button class="btn-icon-simple" id="btnEditFil" onclick="toggleEditFil(event)">✎</button>
-                    <button class="btn-icon-simple" id="btnAddFil" onclick="toggleFormFil(event)">+</button>
-                </div>
-            </div>
-            <table class="setup-table" id="tabFil">
-                <thead id="headFil"></thead>
-                <tbody id="bodyFil"></tbody>
-            </table>
+            <div class="header-config"><h3 style="margin:0; font-size: 14px;">Filamentos</h3><div class="header-btns"><button class="btn-icon-simple" id="btnEditFil" onclick="toggleEditFil(event)">✎</button><button class="btn-icon-simple" id="btnAddFil" onclick="toggleFormFil(event)">+</button></div></div>
+            <table class="setup-table" id="tabFil"><thead id="headFil"></thead><tbody id="bodyFil"></tbody></table>
             <div id="formFil" class="form-novo" onclick="event.stopPropagation()">
                 <label>Marca</label><input type="text" id="fMarca">
                 <label>Material*</label><input type="text" id="fTipo">
                 <label>Preço do Kg*</label><input type="number" id="fPreco">
                 <label>Risco de Perda</label>
-                <div class="selector-row" onclick="document.getElementById('suggestBox').toggleAttribute('open')">
-                    <span id="riscoAtualTexto">0%</span>
-                    <input type="hidden" id="fRisco" value="0">
-                    <div class="arrow-down"></div>
-                </div>
+                <div class="selector-row" onclick="document.getElementById('suggestBox').toggleAttribute('open')"><span id="riscoAtualTexto">0%</span><input type="hidden" id="fRisco" value="0"><div class="arrow-down"></div></div>
                 <details id="suggestBox">
                     <summary></summary>
-                    <div id="tempRiskRow" class="temp-add-row">
-                        <input type="text" id="newRiskName" class="suggest-edit-input" placeholder="Material">
-                        <input type="number" id="newRiskVal" class="suggest-edit-input" style="width:60px" placeholder="%">
-                        <button class="btn-confirm-add" onclick="confirmAddRisk()">✔</button>
-                    </div>
+                    <div id="tempRiskRow" class="temp-add-row"><input type="text" id="newRiskName" class="suggest-edit-input" placeholder="Material"><input type="number" id="newRiskVal" class="suggest-edit-input" style="width:60px" placeholder="%"><button class="btn-confirm-add" onclick="confirmAddRisk()">✔</button></div>
                     <div id="suggestListContent"></div>
-                    <div class="suggest-footer">
-                        <button type="button" class="btn-footer-suggest" onclick="showAddRiskInput()">+ Risco Por Material</button>
-                        <button type="button" id="btnEditSug" class="btn-footer-suggest" onclick="toggleEditSuggest(event)">✎</button>
-                    </div>
+                    <div class="suggest-footer"><button type="button" class="btn-footer-suggest" onclick="showAddRiskInput()">+ Risco Por Material</button><button type="button" id="btnEditSug" class="btn-footer-suggest" onclick="toggleEditSuggest(event)">✎</button></div>
                 </details>
                 <button class="btn-confirm-style" style="width:100%; margin-top:20px;" onclick="addFil()">Adicionar</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    async function downloadApp() {
-        const htmlContent = document.documentElement.outerHTML;
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const defaultName = 'Guias para Orçamento.html';
-
-        if (window.showSaveFilePicker) {
-            try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: defaultName,
-                    types: [{
-                        description: 'Arquivo HTML',
-                        accept: { 'text/html': ['.html'] },
-                    }],
-                });
-                const writable = await handle.createWritable();
-                await writable.write(blob);
-                await writable.close();
-                return;
-            } catch (err) {
-                if (err.name !== 'AbortError') console.error(err);
-                else return;
-            }
-        }
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = defaultName;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100);
-    }
-
-    /* --- LÓGICA DE TEMA E CORES --- */
-    const colors = ['#2ecc71', '#3498db', '#9b59b6', '#e67e22', '#e74c3c'];
-    let tempCustomColor = '';
-
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme_v50') || 'dark';
-        const savedColor = localStorage.getItem('color_v50') || colors[0];
-        setTheme(savedTheme);
-        setColor(savedColor);
-    }
-
-    function toggleSettings(e) {
-        e.stopPropagation();
-        document.getElementById('settingsMenu').classList.toggle('open');
-    }
-
-    function setTheme(mode) {
-        document.body.classList.toggle('light-mode', mode === 'light');
-        document.getElementById('themeDark').classList.toggle('active', mode === 'dark');
-        document.getElementById('themeLight').classList.toggle('active', mode === 'light');
-        localStorage.setItem('theme_v50', mode);
-    }
-
-    function setColor(color) {
-        document.documentElement.style.setProperty('--primary', color);
-        localStorage.setItem('color_v50', color);
-        renderColorGrid(color);
-    }
-
-    function renderColorGrid(activeColor) {
-        const container = document.getElementById('colorGrid');
-        container.innerHTML = '';
-        
-        colors.forEach(c => {
-            const div = document.createElement('div');
-            div.className = `color-swatch ${c === activeColor ? 'active' : ''}`;
-            div.style.backgroundColor = c;
-            div.onclick = () => setColor(c);
-            container.appendChild(div);
-        });
-
-        const customBtn = document.createElement('div');
-        customBtn.className = 'color-swatch custom-picker-btn';
-        
-        if (!colors.includes(activeColor)) {
-            customBtn.classList.add('active');
-            customBtn.style.backgroundColor = activeColor;
-            customBtn.style.color = 'transparent';
-            customBtn.style.border = '2px solid var(--text)';
-        } else {
-            customBtn.innerHTML = '<span>+</span>';
-        }
-
-        customBtn.onclick = (e) => {
-            e.stopPropagation();
-            openCustomColorModal();
-        };
-        
-        container.appendChild(customBtn);
-    }
-
-    function openCustomColorModal() {
-        const modal = document.getElementById('customColorModal');
-        document.getElementById('hueSlider').value = 0;
-        document.getElementById('satSlider').value = 70;
-        document.getElementById('ligSlider').value = 50;
-        updateCustomColor();
-        modal.classList.add('open');
-    }
-
-    function updateCustomColor() {
-        const h = document.getElementById('hueSlider').value;
-        const s = document.getElementById('satSlider').value;
-        const l = document.getElementById('ligSlider').value;
-        
-        const color = `hsl(${h}, ${s}%, ${l}%)`;
-        tempCustomColor = color;
-        document.getElementById('colorPreview').style.backgroundColor = color;
-
-        document.getElementById('satSlider').style.background = `linear-gradient(to right, #888, hsl(${h}, 100%, 50%))`;
-        document.getElementById('ligSlider').style.background = `linear-gradient(to right, #000, hsl(${h}, 100%, 50%), #fff)`;
-    }
-
-    function confirmCustomColor() {
-        if(tempCustomColor) {
-            setColor(tempCustomColor);
-        }
-        document.getElementById('customColorModal').classList.remove('open');
-    }
-
-    /* --- EXPANDIR/RECOLHER CONTEÚDO --- */
-    function toggleMainContent() {
-        const wrapper = document.getElementById('mainContentWrapper');
-        if (wrapper.classList.contains('collapsed')) {
-            wrapper.classList.remove('collapsed');
-        } else {
-            wrapper.classList.add('collapsed');
-        }
-    }
-
-    /* --- VARIÁVEIS DO SISTEMA --- */
-    let isEditMaq = false, isEditFil = false, isEditSug = false, isEditExtra = false;
-    let maquinas = JSON.parse(localStorage.getItem('maq3d_v50')) || [];
-    let filamentos = JSON.parse(localStorage.getItem('fil3d_v50')) || [];
-    let sugestoesRiscos = JSON.parse(localStorage.getItem('sug_riscos_v50')) || [];
-    let extrasList = JSON.parse(localStorage.getItem('extras_list_v50')) || [];
-    let selectedExtras = [];
-
-    const formatBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
-
-    function initCalculator() {
-        document.getElementById('tempo').value = '';
-        document.getElementById('weight').value = '';
-        document.getElementById('resultado').style.display = 'none';
-        
-        const radios = document.getElementsByName('formulaType');
-        radios.forEach(r => r.checked = false);
-        toggleFormula(); 
-
-        selectedExtras = [];
-        initTheme();
-        render();
-    }
-
-    function render() {
-        renderTabela('Maq', maquinas, ['marca', 'modelo', 'valorEquip', 'custoOp'], isEditMaq);
-        renderTabela('Fil', filamentos, ['marca', 'tipo', 'preco', 'risco', 'total'], isEditFil);
-        renderSugestoes();
-        renderExtrasMenu();
-        renderSelectedExtras();
-        updateSeletores();
-        updateButtonStates();
-        
-        localStorage.setItem('maq3d_v50', JSON.stringify(maquinas));
-        localStorage.setItem('fil3d_v50', JSON.stringify(filamentos));
-        localStorage.setItem('sug_riscos_v50', JSON.stringify(sugestoesRiscos));
-        localStorage.setItem('extras_list_v50', JSON.stringify(extrasList));
-    }
-
-    function toggleFormula() {
-        const checked = document.querySelector('input[name="formulaType"]:checked');
-        const container = document.getElementById('formulaContainer');
-        
-        if (!checked) {
-            container.innerHTML = ''; 
-            return;
-        }
-
-        const type = checked.value;
-        if (type === 'type') {
-            container.innerHTML = `
-                <select id="selMargem">
-                    <option value="2.5" selected>Peça Simples ou até 6H</option>
-                    <option value="3.0">Peça Normal ou 6-12h</option>
-                    <option value="3.5">Peça Complexa ou 12-24h</option>
-                    <option value="4.0">Peça Critica ou +24H</option>
-                </select>
-                <div class="helper-text">*Valores padronizados.</div>`;
-        } else {
-            container.innerHTML = `
-                <div style="position: relative;">
-                    <input type="number" id="inputMargemPercent" placeholder="" style="padding-right: 30px;">
-                    <span style="position: absolute; right: 15px; top: 12px; color: #888;">%</span>
-                </div>
-                <div class="helper-text">*Porcentagem sobre custos de produção.</div>`;
-        }
-    }
-
-    function updateButtonStates() {
-        const btnMaq = document.getElementById('btnEditMaq');
-        const btnFil = document.getElementById('btnEditFil');
-        const btnExtra = document.getElementById('btnEditExtra');
-        const btnSug = document.getElementById('btnEditSug');
-        
-        const setBtnState = (btn, active) => {
-            btn.innerHTML = '✎';
-            if(active) btn.classList.add('btn-edit-active');
-            else btn.classList.remove('btn-edit-active');
-        }
-
-        setBtnState(btnMaq, isEditMaq);
-        setBtnState(btnFil, isEditFil);
-        setBtnState(btnExtra, isEditExtra);
-        setBtnState(btnSug, isEditSug);
-    }
-
-    /* --- LÓGICA DE EXTRAS COM INPUT TEMPORÁRIO --- */
-    function renderExtrasMenu() {
-        const container = document.getElementById('extrasListContent'); 
-        container.innerHTML = '';
-        extrasList.forEach((item, idx) => {
-            const div = document.createElement('div'); div.className = 'suggest-item-row';
-            if(isEditExtra) {
-                div.innerHTML = `
-                    <div style="flex-grow:1; padding:10px; display:flex; gap:5px">
-                        <input class="suggest-edit-input" value="${item.nome}" onchange="updExtra(${idx}, 'nome', this.value)">
-                        <input class="suggest-edit-input" style="width:70px" type="number" value="${item.valor}" onchange="updExtra(${idx}, 'valor', this.value)">
-                    </div>
-                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remExtra(event, ${idx})">✕</button></div></div>`;
-            } else {
-                const isSelected = selectedExtras.includes(idx);
-                div.innerHTML = `
-                    <div class="suggest-data ${isSelected ? 'selected' : ''}" onclick="toggleSelectExtra(${idx})">
-                        <span>${item.nome}</span><strong>${formatBRL(item.valor)}</strong>
-                    </div>`;
-            }
-            container.appendChild(div);
-        });
-        
-        updateButtonStates();
-    }
-
-    function showAddExtraInput() {
-        document.getElementById('tempExtraRow').classList.add('active');
-        document.getElementById('newExtraName').focus();
-    }
-
-    function confirmAddExtra() {
-        const name = document.getElementById('newExtraName').value;
-        const val = parseFloat(document.getElementById('newExtraVal').value);
-        if (name && !isNaN(val)) {
-            extrasList.push({nome: name, valor: val});
-            document.getElementById('newExtraName').value = '';
-            document.getElementById('newExtraVal').value = '';
-            document.getElementById('tempExtraRow').classList.remove('active');
-            render();
-        } else {
-            alert("Preencha descrição e valor.");
-        }
-    }
-
-    function renderSelectedExtras() {
-        const container = document.getElementById('selectedExtrasContainer');
-        container.innerHTML = '';
-        if(selectedExtras.length === 0) {
-            container.style.display = 'none';
-            return;
-        }
-        container.style.display = 'flex';
-        selectedExtras.forEach(idx => {
-            if (!extrasList[idx]) return; 
-            const chip = document.createElement('div');
-            chip.className = 'extra-chip';
-            chip.innerHTML = `${extrasList[idx].nome} <span>${formatBRL(extrasList[idx].valor)}</span> <span class="extra-chip-rm" onclick="toggleSelectExtra(${idx})">✕</span>`;
-            container.appendChild(chip);
-        });
-    }
-
-    function toggleEditExtra(e) { e.stopPropagation(); isEditExtra = !isEditExtra; document.getElementById('tempExtraRow').classList.remove('active'); render(); }
-    function updExtra(i, c, v) { extrasList[i][c] = c === 'valor' ? parseFloat(v) : v; render(); }
+    /* ... Funções de Download e Tema (Mantidas inalteradas) ... */
+    async function downloadApp(){const e=document.documentElement.outerHTML,t=new Blob([e],{type:"text/html"}),n="Guias para Orçamento.html";if(window.showSaveFilePicker)try{const o=await window.showSaveFilePicker({suggestedName:n,types:[{description:"Arquivo HTML",accept:{"text/html":[".html"]}}]}),a=await o.createWritable();await a.write(t),await a.close();return}catch(e){if("AbortError"!==e.name)console.error(e);else return}const o=URL.createObjectURL(t),a=document.createElement("a");a.href=o,a.download=n,document.body.appendChild(a),a.click(),setTimeout(()=>{document.body.removeChild(a),URL.revokeObjectURL(o)},100)}
+    const colors=["#2ecc71","#3498db","#9b59b6","#e67e22","#e74c3c"];let tempCustomColor="";function initTheme(){const e=localStorage.getItem("theme_v50")||"dark",t=localStorage.getItem("color_v50")||colors[0];setTheme(e),setColor(t)}function toggleSettings(e){e.stopPropagation(),document.getElementById("settingsMenu").classList.toggle("open")}function setTheme(e){document.body.classList.toggle("light-mode","light"===e),document.getElementById("themeDark").classList.toggle("active","dark"===e),document.getElementById("themeLight").classList.toggle("active","light"===e),localStorage.setItem("theme_v50",e)}function setColor(e){document.documentElement.style.setProperty("--primary",e),localStorage.setItem("color_v50",e),renderColorGrid(e)}function renderColorGrid(e){const t=document.getElementById("colorGrid");t.innerHTML="",colors.forEach(n=>{const o=document.createElement("div");o.className=`color-swatch ${n===e?"active":""}`,o.style.backgroundColor=n,o.onclick=()=>setColor(n),t.appendChild(o)});const n=document.createElement("div");n.className="color-swatch custom-picker-btn",colors.includes(e)?n.innerHTML="<span>+</span>":(n.classList.add("active"),n.style.backgroundColor=e,n.style.color="transparent",n.style.border="2px solid var(--text)"),n.onclick=e=>{e.stopPropagation(),openCustomColorModal()},t.appendChild(n)}function openCustomColorModal(){const e=document.getElementById("customColorModal");document.getElementById("hueSlider").value=0,document.getElementById("satSlider").value=70,document.getElementById("ligSlider").value=50,updateCustomColor(),e.classList.add("open")}function updateCustomColor(){const e=document.getElementById("hueSlider").value,t=document.getElementById("satSlider").value,n=document.getElementById("ligSlider").value,o=`hsl(${e}, ${t}%, ${n}%)`;tempCustomColor=o,document.getElementById("colorPreview").style.backgroundColor=o,document.getElementById("satSlider").style.background=`linear-gradient(to right, #888, hsl(${e}, 100%, 50%))`,document.getElementById("ligSlider").style.background=`linear-gradient(to right, #000, hsl(${e}, 100%, 50%), #fff)`}function confirmCustomColor(){tempCustomColor&&setColor(tempCustomColor),document.getElementById("customColorModal").classList.remove("open")}
+    function toggleMainContent(){const e=document.getElementById("mainContentWrapper");e.classList.contains("collapsed")?e.classList.remove("collapsed"):e.classList.add("collapsed")}
     
-    function remExtra(e, i) { 
-        e.stopPropagation(); 
-        if(confirm("Excluir este item?")) { 
-            extrasList.splice(i,1); 
-            selectedExtras = selectedExtras.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx); 
-            render(); 
-        } 
-    }
+    let isEditMaq=!1,isEditFil=!1,isEditSug=!1,isEditExtra=!1,maquinas=JSON.parse(localStorage.getItem("maq3d_v50"))||[],filamentos=JSON.parse(localStorage.getItem("fil3d_v50"))||[],sugestoesRiscos=JSON.parse(localStorage.getItem("sug_riscos_v50"))||[],extrasList=JSON.parse(localStorage.getItem("extras_list_v50"))||[],selectedExtras=[];const formatBRL=e=>e.toLocaleString("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:2});
     
-    function toggleSelectExtra(idx) {
-        if (selectedExtras.includes(idx)) {
-            selectedExtras = selectedExtras.filter(i => i !== idx);
-        } else {
-            selectedExtras.push(idx);
-        }
-        render(); 
-    }
-
-    /* --- LÓGICA DE RISCOS COM INPUT TEMPORÁRIO --- */
-    function renderSugestoes() {
-        const container = document.getElementById('suggestListContent'); container.innerHTML = '';
-        sugestoesRiscos.forEach((s, idx) => {
-            const div = document.createElement('div'); div.className = 'suggest-item-row';
-            if(isEditSug) {
-                div.innerHTML = `<div class="col-ctrl"><div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDragSug(event, ${idx})">☰</span></div></div>
-                    <div style="flex-grow:1; padding:10px; display:flex; gap:5px">
-                        <input class="suggest-edit-input" value="${s.nome}" onchange="updSug(${idx}, 'nome', this.value)">
-                        <input class="suggest-edit-input" style="width:40px" type="number" value="${s.risco}" onchange="updSug(${idx}, 'risco', this.value)">%
-                    </div>
-                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remSug(event, ${idx})">✕</button></div></div>`;
-            } else {
-                div.innerHTML = `<div class="suggest-data" onclick="setRisco(${s.risco})"><span>${s.nome}</span><strong>${s.risco}%</strong></div>`;
-            }
-            container.appendChild(div);
-        });
-        updateButtonStates();
-    }
-
-    function showAddRiskInput() {
-        document.getElementById('tempRiskRow').classList.add('active');
-        document.getElementById('newRiskName').focus();
-    }
-
-    function confirmAddRisk() {
-        const name = document.getElementById('newRiskName').value;
-        const val = parseFloat(document.getElementById('newRiskVal').value);
-        if (name && !isNaN(val)) {
-            sugestoesRiscos.push({nome: name, risco: val});
-            document.getElementById('newRiskName').value = '';
-            document.getElementById('newRiskVal').value = '';
-            document.getElementById('tempRiskRow').classList.remove('active');
-            render();
-        } else {
-            alert("Preencha material e porcentagem.");
-        }
-    }
-
-    function toggleEditSuggest(e) { e.stopPropagation(); isEditSug = !isEditSug; document.getElementById('tempRiskRow').classList.remove('active'); renderSugestoes(); }
-    function updSug(i, c, v) { sugestoesRiscos[i][c] = c === 'risco' ? parseFloat(v) : v; }
-    function remSug(e, i) { e.stopPropagation(); if(confirm("Excluir risco?")) { sugestoesRiscos.splice(i,1); renderSugestoes(); } }
+    function initCalculator(){document.getElementById("tempo").value="",document.getElementById("weight").value="",document.getElementById("resultado").style.display="none";const e=document.getElementsByName("formulaType");e.forEach(e=>e.checked=!1),toggleFormula(),selectedExtras=[],initTheme(),render()}
+    function render(){renderTabela("Maq",maquinas,["marca","modelo","valorEquip","custoOp"],isEditMaq),renderTabela("Fil",filamentos,["marca","tipo","preco","risco","total"],isEditFil),renderSugestoes(),renderExtrasMenu(),renderSelectedExtras(),updateSeletores(),updateButtonStates(),localStorage.setItem("maq3d_v50",JSON.stringify(maquinas)),localStorage.setItem("fil3d_v50",JSON.stringify(filamentos)),localStorage.setItem("sug_riscos_v50",JSON.stringify(sugestoesRiscos)),localStorage.setItem("extras_list_v50",JSON.stringify(extrasList))}
     
-    function setRisco(val) { 
-        document.getElementById('fRisco').value = val; 
-        document.getElementById('riscoAtualTexto').innerText = val + '%'; 
-        document.getElementById('suggestBox').removeAttribute('open'); 
-    }
-
-    /* --- CÁLCULO E TABELAS GERAIS --- */
-    function calcularVenda() {
-        const selM = document.getElementById('selMaquina'), selF = document.getElementById('selFilamento');
-        if (!selM.value || !selF.value) { alert("Selecione a Impressora e o Filamento."); return; }
-
-        const hVal = parseFloat(selM.value);
-        const gVal = parseFloat(selF.value);
-        const t = parseTempo(document.getElementById('tempo').value);
-        const p = parseFloat(document.getElementById('weight').value) || 0;
-        
-        const totalCustoOp = t * hVal;
-        const totalCustoMat = p * gVal;
-        const custoProducao = totalCustoOp + totalCustoMat;
-        
-        const checked = document.querySelector('input[name="formulaType"]:checked');
-        if(!checked) { alert("Selecione uma Fórmula de Cálculo."); return; }
-        
-        const formulaType = checked.value;
-        let valorComLucro = 0;
-        
-        if (formulaType === 'type') {
-            const margem = parseFloat(document.getElementById('selMargem').value);
-            valorComLucro = custoProducao * margem;
-        } else {
-            const perc = parseFloat(document.getElementById('inputMargemPercent').value) || 0;
-            valorComLucro = custoProducao * (1 + (perc / 100));
-        }
-
-        let totalExtras = 0;
-        selectedExtras.forEach(idx => {
-            if(extrasList[idx]) totalExtras += extrasList[idx].valor;
-        });
-
-        const valorFinal = valorComLucro + totalExtras;
-        
-        document.getElementById('resultado').style.display = 'block';
-        document.getElementById('valorFinal').innerText = formatBRL(valorFinal);
-        document.getElementById('resCustoOp').innerText = formatBRL(totalCustoOp);
-        document.getElementById('resCustoMat').innerText = formatBRL(totalCustoMat);
-        document.getElementById('resCustoProd').innerText = formatBRL(custoProducao);
-        
-        const extraRow = document.getElementById('rowExtra');
-        if(totalExtras > 0) {
-            extraRow.style.display = 'flex';
-            document.getElementById('resCustoExtra').innerText = formatBRL(totalExtras);
-        } else {
-            extraRow.style.display = 'none';
-        }
-    }
-
-    function parseTempo(input) {
-        input = input.toLowerCase().replace(',', '.').trim();
-        if (input.includes('h') || input.includes('m')) {
-            let horas = 0, minutos = 0;
-            const hMatch = input.match(/(\d+)\s*h/);
-            const mMatch = input.match(/(\d+)\s*m/);
-            if (hMatch) horas = parseInt(hMatch[1]);
-            if (mMatch) minutos = parseInt(mMatch[1]);
-            if (!hMatch && !mMatch && input.includes('h')) {
-                let parts = input.split('h');
-                horas = parseInt(parts[0]) || 0;
-                minutos = parseInt(parts[1]) || 0;
-            }
-            return horas + (minutos / 60);
-        }
-        return parseFloat(input) || 0;
-    }
-
-    function renderTabela(id, dados, cols, editMode) {
-        const head = document.getElementById('head'+id), body = document.getElementById('body'+id);
-        head.innerHTML = ''; body.innerHTML = '';
-        if (dados.length === 0 && !editMode) return;
-        const thr = head.insertRow();
-        if(editMode) { const thL = document.createElement('th'); thL.className='col-ctrl'; thr.appendChild(thL); }
-        cols.forEach(c => { 
-            const th = document.createElement('th'); 
-            const nMaq = {marca:'Marca', modelo:'Modelo', valorEquip:'Valor do Equipamento', custoOp:'Custo Operacional'};
-            const nFil = {marca:'Marca', tipo:'Material', preco:'Preço', risco:'Risco de Perda', total:'Custo do Material'};
-            th.innerText = id === 'Maq' ? nMaq[c] : nFil[c];
-            thr.appendChild(th); 
-        });
-        if(editMode) { const thR = document.createElement('th'); thR.className='col-ctrl'; thr.appendChild(thR); }
-        dados.forEach((item, idx) => {
-            const row = body.insertRow();
-            if(editMode) {
-                const tdL = row.insertCell(); tdL.className = 'col-ctrl';
-                tdL.innerHTML = `<div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDrag(event, '${id}', ${idx})">☰</span></div>`;
-            }
-            cols.forEach(c => {
-                const td = row.insertCell();
-                if(editMode) {
-                    if(c==='custoOp'||c==='total') {
-                        const val = id==='Maq' ? item.custoOp : (item.preco/1000 * (1+item.risco/100));
-                        td.innerHTML = `<input value="${formatBRL(val)}${id==='Maq'?'/h':'/g'}" readonly>`;
-                    } else {
-                        const type = (c==='marca'||c==='modelo'||c==='tipo') ? 'text' : 'number';
-                        td.innerHTML = `<input type="${type}" value="${item[c]}" onchange="updItem('${id}', ${idx}, '${c}', this.value)">`;
-                    }
-                } else {
-                    if(c==='custoOp') td.innerHTML = `<span class="highlight">${formatBRL(item.custoOp)}/h</span>`;
-                    else if(c==='total') td.innerHTML = `<span class="highlight">${formatBRL((item.preco/1000 * (1+item.risco/100)))}/g</span>`;
-                    else if(c==='preco' && id==='Fil') td.innerHTML = `<span>${formatBRL(item[c])}/kg</span>`;
-                    else if(c==='risco' && id==='Fil') td.innerHTML = `<span>${item[c]}%</span>`;
-                    else if(typeof item[c]==='number') td.innerText = formatBRL(item[c]);
-                    else td.innerText = item[c];
-                }
-            });
-            if(editMode) {
-                const tdR = row.insertCell(); tdR.className = 'col-ctrl';
-                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="removerItem(event, '${id}', ${idx})">✕</button></div>`;
-            }
-        });
-    }
-
-    function updateSeletores() {
-        const sM = document.getElementById('selMaquina'), sF = document.getElementById('selFilamento');
-        if(!sM || !sF) return;
-        const valM = sM.value, valF = sF.value;
-        sM.innerHTML = valM === "" ? '<option value="" disabled selected>Selecionar...</option>' : '';
-        sF.innerHTML = valF === "" ? '<option value="" disabled selected>Selecionar...</option>' : '';
-        maquinas.forEach(m => sM.innerHTML += `<option value="${m.custoOp}" ${valM == m.custoOp ? 'selected' : ''}>${m.marca} ${m.modelo}</option>`);
-        filamentos.forEach(f => sF.innerHTML += `<option value="${(f.preco/1000)*(1+f.risco/100)}" ${valF == ((f.preco/1000)*(1+f.risco/100)) ? 'selected' : ''}>${(f.marca?f.marca+' ': '')+f.tipo}</option>`);
-    }
-
-    function limparCampos() { ['mMarca', 'mModelo', 'mEquipVal', 'fMarca', 'fTipo', 'fPreco'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); document.getElementById('fRisco').value = 0; document.getElementById('riscoAtualTexto').innerText = '0%'; document.getElementById('suggestBox').removeAttribute('open'); isEditSug = false; renderSugestoes(); }
-    function startDragSug(e, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 40) { let dir = diff > 0 ? 1 : -1; let n = idx + dir; if(n>=0 && n<sugestoesRiscos.length) { [sugestoesRiscos[idx], sugestoesRiscos[n]] = [sugestoesRiscos[n], sugestoesRiscos[idx]]; idx = n; startY = ev.clientY; renderSugestoes(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
-    function startDrag(e, id, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 45) { let dir = diff > 0 ? 1 : -1; let a = id==='Maq'?maquinas:filamentos; let n = idx + dir; if(n>=0 && n<a.length) { [a[idx], a[n]] = [a[n], a[idx]]; idx = n; startY = ev.clientY; render(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
+    function toggleFormula(){const e=document.querySelector('input[name="formulaType"]:checked'),t=document.getElementById("formulaContainer");if(!e)return void(t.innerHTML="");"type"===e.value?t.innerHTML='<select id="selMargem"><option value="2.5" selected>Peça Simples ou até 6H</option><option value="3.0">Peça Normal ou 6-12h</option><option value="3.5">Peça Complexa ou 12-24h</option><option value="4.0">Peça Critica ou +24H</option></select><div class="helper-text">*Valores padronizados.</div>':t.innerHTML='<div style="position: relative;"><input type="number" id="inputMargemPercent" placeholder="" style="padding-right: 30px;"><span style="position: absolute; right: 15px; top: 12px; color: #888;">%</span></div><div class="helper-text">*Porcentagem sobre custos de produção.</div>'}
     
-    function updItem(id, idx, campo, val) { 
-        const arr = id === 'Maq' ? maquinas : filamentos;
-        if (campo === 'marca' || campo === 'modelo' || campo === 'tipo') {
-            arr[idx][campo] = val;
-        } else {
-            const num = parseFloat(val);
-            if (isNaN(num)) return; 
-            arr[idx][campo] = num;
-            if (id === 'Maq' && campo === 'valorEquip') {
-                arr[idx].custoOp = num * 0.001;
-            }
-        }
-        render();
-    }
+    function updateButtonStates(){const e=document.getElementById("btnEditMaq"),t=document.getElementById("btnEditFil"),n=document.getElementById("btnEditExtra"),o=document.getElementById("btnEditSug"),a=(e,t)=>{e.innerHTML="✎",t?e.classList.add("btn-edit-active"):e.classList.remove("btn-edit-active")};a(e,isEditMaq),a(t,isEditFil),a(n,isEditExtra),a(o,isEditSug)}
     
-    function addMaq() { const v = parseFloat(document.getElementById('mEquipVal').value); if(!document.getElementById('mMarca').value || isNaN(v)) return; maquinas.push({marca:document.getElementById('mMarca').value, modelo:document.getElementById('mModelo').value, valorEquip:v, custoOp:v*0.001}); document.getElementById('formMaq').style.display='none'; limparCampos(); render(); }
-    function addFil() { const p = parseFloat(document.getElementById('fPreco').value); if(!document.getElementById('fTipo').value || isNaN(p)) return; filamentos.push({marca:document.getElementById('fMarca').value, tipo:document.getElementById('fTipo').value, preco:p, risco:parseFloat(document.getElementById('fRisco').value)||0}); document.getElementById('formFil').style.display='none'; limparCampos(); render(); }
-    function removerItem(e, id, idx) { 
-        if(e) e.stopPropagation(); 
-        if(confirm("Excluir?")) { (id==='Maq'?maquinas:filamentos).splice(idx,1); render(); } 
-    }
-    function toggleEditMaq(e) { e.stopPropagation(); if (maquinas.length === 0 && !isEditMaq) return; isEditMaq = !isEditMaq; render(); }
-    function toggleEditFil(e) { e.stopPropagation(); if (filamentos.length === 0 && !isEditFil) return; isEditFil = !isEditFil; render(); }
-    function toggleFormMaq(e) { e.stopPropagation(); document.getElementById('formMaq').style.display = 'block'; }
-    function toggleFormFil(e) { e.stopPropagation(); document.getElementById('formFil').style.display = 'block'; }
-    
-    function fecharModais(e) { 
-        const settingsMenu = document.getElementById('settingsMenu');
-        if (settingsMenu.classList.contains('open') && !e.target.closest('.top-bar')) {
-            settingsMenu.classList.remove('open');
+    function renderExtrasMenu(){const e=document.getElementById("extrasListContent");e.innerHTML="",extrasList.forEach((t,n)=>{const o=document.createElement("div");o.className="suggest-item-row",isEditExtra?o.innerHTML=`<div style="flex-grow:1; padding:10px; display:flex; gap:5px"><input class="suggest-edit-input" value="${t.nome}" onchange="updExtra(${n}, 'nome', this.value)"><input class="suggest-edit-input" style="width:70px" type="number" value="${t.valor}" onchange="updExtra(${n}, 'valor', this.value)"></div><div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remExtra(event, ${n})">✕</button></div></div>`:o.innerHTML=`<div class="suggest-data ${selectedExtras.includes(n)?"selected":""}" onclick="toggleSelectExtra(${n})"><span>${t.nome}</span><strong>${formatBRL(t.valor)}</strong></div>`,e.appendChild(o)}),updateButtonStates()}
+    function showAddExtraInput(){document.getElementById("tempExtraRow").classList.add("active"),document.getElementById("newExtraName").focus()}
+    function confirmAddExtra(){const e=document.getElementById("newExtraName").value,t=parseFloat(document.getElementById("newExtraVal").value);e&&!isNaN(t)?(extrasList.push({nome:e,valor:t}),document.getElementById("newExtraName").value="",document.getElementById("newExtraVal").value="",document.getElementById("tempExtraRow").classList.remove("active"),render()):alert("Preencha descrição e valor.")}
+    function renderSelectedExtras(){const e=document.getElementById("selectedExtrasContainer");e.innerHTML="",0!==selectedExtras.length?(e.style.display="flex",selectedExtras.forEach(t=>{if(!extrasList[t])return;const n=document.createElement("div");n.className="extra-chip",n.innerHTML=`${extrasList[t].nome} <span>${formatBRL(extrasList[t].valor)}</span> <span class="extra-chip-rm" onclick="toggleSelectExtra(${t})">✕</span>`,e.appendChild(n)})):e.style.display="none"}
+    function toggleEditExtra(e){e.stopPropagation(),isEditExtra=!isEditExtra,document.getElementById("tempExtraRow").classList.remove("active"),render()}
+    function updExtra(e,t,n){extrasList[e][t]="valor"===t?parseFloat(n):n,render()}
+    function remExtra(e,t){e.stopPropagation(),confirm("Excluir este item?")&&(extrasList.splice(t,1),selectedExtras=selectedExtras.filter(e=>e!==t).map(e=>e>t?e-1:e),render())}
+    function toggleSelectExtra(e){selectedExtras.includes(e)?selectedExtras=selectedExtras.filter(t=>t!==e):selectedExtras.push(e),render()}
+
+    function renderSugestoes(){const e=document.getElementById("suggestListContent");e.innerHTML="",sugestoesRiscos.forEach((t,n)=>{const o=document.createElement("div");o.className="suggest-item-row",isEditSug?o.innerHTML=`<div class="col-ctrl"><div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDragSug(event, ${n})">☰</span></div></div><div style="flex-grow:1; padding:10px; display:flex; gap:5px"><input class="suggest-edit-input" value="${t.nome}" onchange="updSug(${n}, 'nome', this.value)"><input class="suggest-edit-input" style="width:40px" type="number" value="${t.risco}" onchange="updSug(${n}, 'risco', this.value)">%</div><div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remSug(event, ${n})">✕</button></div></div>`:o.innerHTML=`<div class="suggest-data" onclick="setRisco(${t.risco})"><span>${t.nome}</span><strong>${t.risco}%</strong></div>`,e.appendChild(o)}),updateButtonStates()}
+    function showAddRiskInput(){document.getElementById("tempRiskRow").classList.add("active"),document.getElementById("newRiskName").focus()}
+    function confirmAddRisk(){const e=document.getElementById("newRiskName").value,t=parseFloat(document.getElementById("newRiskVal").value);e&&!isNaN(t)?(sugestoesRiscos.push({nome:e,risco:t}),document.getElementById("newRiskName").value="",document.getElementById("newRiskVal").value="",document.getElementById("tempRiskRow").classList.remove("active"),render()):alert("Preencha material e porcentagem.")}
+    function toggleEditSuggest(e){e.stopPropagation(),isEditSug=!isEditSug,document.getElementById("tempRiskRow").classList.remove("active"),renderSugestoes()}
+    function updSug(e,t,n){sugestoesRiscos[e][t]="risco"===t?parseFloat(n):n}
+    function remSug(e,t){e.stopPropagation(),confirm("Excluir risco?")&&(sugestoesRiscos.splice(t,1),renderSugestoes())}
+    function setRisco(e){document.getElementById("fRisco").value=e,document.getElementById("riscoAtualTexto").innerText=e+"%",document.getElementById("suggestBox").removeAttribute("open")}
+
+    /* --- CÁLCULO ATUALIZADO --- */
+    function calcularVenda(){
+        const e=document.getElementById("selMaquina"),t=document.getElementById("selFilamento");
+        if(!e.value||!t.value)return void alert("Selecione a Impressora e o Filamento.");
+        const n=parseFloat(e.value),o=parseFloat(t.value),a=parseTempo(document.getElementById("tempo").value),i=parseFloat(document.getElementById("weight").value)||0,r=a*n,l=i*o,s=r+l,c=document.querySelector('input[name="formulaType"]:checked');
+        if(!c)return void alert("Selecione uma Fórmula de Cálculo.");
+        
+        let d=0;
+        if("type"===c.value){
+            const e=parseFloat(document.getElementById("selMargem").value);
+            d=s*e
+        }else{
+            const e=parseFloat(document.getElementById("inputMargemPercent").value)||0;
+            d=s*(1+e/100)
         }
         
-        const colorModal = document.getElementById('customColorModal');
-        if (colorModal.classList.contains('open') && !e.target.closest('#settingsMenu')) {
-            colorModal.classList.remove('open');
-        }
-
-        const fMaq = document.getElementById('formMaq');
-        const bMaq = document.getElementById('btnAddMaq');
-        if (fMaq.style.display === 'block' && !e.target.closest('#formMaq') && e.target !== bMaq) {
-            fMaq.style.display = 'none';
-            limparCampos();
-        }
-
-        const fFil = document.getElementById('formFil');
-        const bFil = document.getElementById('btnAddFil');
-        if (fFil.style.display === 'block' && !e.target.closest('#formFil') && e.target !== bFil) {
-            fFil.style.display = 'none';
-            limparCampos();
-        }
+        let u=0;
+        selectedExtras.forEach(e=>{extrasList[e]&&(u+=extrasList[e].valor)});
+        const m=d+u; // Valor Sugerido
         
-        // Fecha modo edição se clicar fora das tabelas
-        if (isEditMaq && !e.target.closest('#tabMaq') && !e.target.closest('#btnEditMaq')) { isEditMaq = false; render(); }
-        if (isEditFil && !e.target.closest('#tabFil') && !e.target.closest('#btnEditFil')) { isEditFil = false; render(); }
-        if (isEditExtra && !e.target.closest('#extrasBox') && !e.target.closest('#btnEditExtra')) { isEditExtra = false; render(); }
-        if (isEditSug && !e.target.closest('#suggestBox') && !e.target.closest('#btnEditSug')) { isEditSug = false; renderSugestoes(); }
-
-        const extrasBox = document.getElementById('extrasBox');
-        const btnToggleExtra = document.getElementById('btnToggleExtra');
-        if (extrasBox.hasAttribute('open') && !e.target.closest('#extrasBox') && e.target !== btnToggleExtra) {
-            extrasBox.removeAttribute('open');
-            document.getElementById('tempExtraRow').classList.remove('active');
-            isEditExtra = false; 
-            render();
+        // CALCULO SHOPEE
+        // Fórmula: (ValorSugerido + 4.00) / 0.80
+        const shopeeVal = (m + 4) / 0.8;
+        let diffPercent = 0;
+        if (m > 0) {
+            diffPercent = ((shopeeVal - m) / m) * 100;
         }
 
-        const suggestBox = document.getElementById('suggestBox');
-        if (suggestBox.hasAttribute('open') && !e.target.closest('#suggestBox') && !e.target.closest('.selector-row')) {
-           suggestBox.removeAttribute('open');
-           document.getElementById('tempRiskRow').classList.remove('active');
-           isEditSug = false;
-           renderSugestoes();
-        }
+        document.getElementById("resultado").style.display="block";
+        document.getElementById("valorFinal").innerText=formatBRL(m);
+        
+        // Atualiza UI Shopee
+        document.getElementById("valShopee").innerText = formatBRL(shopeeVal);
+        document.getElementById("tagShopee").innerText = '+' + diffPercent.toFixed(0) + '%';
+
+        document.getElementById("resCustoOp").innerText=formatBRL(r);
+        document.getElementById("resCustoMat").innerText=formatBRL(l);
+        document.getElementById("resCustoProd").innerText=formatBRL(s);
+        const p=document.getElementById("rowExtra");
+        u>0?(p.style.display="flex",document.getElementById("resCustoExtra").innerText=formatBRL(u)):p.style.display="none"
     }
 
-    document.addEventListener('click', fecharModais);
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            isEditMaq = false; isEditFil = false; isEditSug = false; isEditExtra = false;
-            document.getElementById('formMaq').style.display = 'none';
-            document.getElementById('formFil').style.display = 'none';
-            document.getElementById('extrasBox').removeAttribute('open');
-            document.getElementById('suggestBox').removeAttribute('open');
-            document.getElementById('tempExtraRow').classList.remove('active');
-            document.getElementById('tempRiskRow').classList.remove('active');
-            document.getElementById('settingsMenu').classList.remove('open');
-            document.getElementById('customColorModal').classList.remove('open');
-            limparCampos();
-            render();
+    function parseTempo(e){
+        let t=e.toLowerCase().trim();
+        if(t.includes(":")){
+            let e=t.split(":"),n=parseFloat(e[0])||0,o=parseFloat(e[1])||0;
+            return n+o/60
         }
-    });
+        if(t=t.replace(",","."),t.includes("h")||t.includes("m")){
+            let e=0,n=0;
+            let o=t.match(/([\d\.]+)\s*h/);o&&(e=parseFloat(o[1]));
+            let a=t.match(/([\d\.]+)\s*m/);return a&&(n=parseFloat(a[1])),e+n/60
+        }
+        return parseFloat(t)||0
+    }
 
-    initCalculator();
+    function renderTabela(e,t,n,o){const a=document.getElementById("head"+e),i=document.getElementById("body"+e);if(a.innerHTML="",i.innerHTML="",0!==t.length||o){const r=a.insertRow();o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));n.forEach(t=>{const n=document.createElement("th"),o={marca:"Marca",modelo:"Modelo",valorEquip:"Valor do Equipamento",custoOp:"Custo Operacional"},a={marca:"Marca",tipo:"Material",preco:"Preço",risco:"Risco de Perda",total:"Custo do Material"};n.innerText="Maq"===e?o[t]:a[t],r.appendChild(n)});var l;o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));t.forEach((a,r)=>{const l=i.insertRow();if(o){(s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDrag(event, '${e}', ${r})">☰</span></div>`}n.forEach(n=>{const i=l.insertCell();if(o)if("custoOp"===n||"total"===n){const t="Maq"===e?a.custoOp:a.preco/1e3*(1+a.risco/100);i.innerHTML=`<input value="${formatBRL(t)}${"Maq"===e?"/h":"/g"}" readonly>`}else{const t="marca"===n||"modelo"===n||"tipo"===n?"text":"number";i.innerHTML=`<input type="${t}" value="${a[n]}" onchange="updItem('${e}', ${r}, '${n}', this.value)">`}else"custoOp"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.custoOp)}/h</span>`:"total"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.preco/1e3*(1+a.risco/100))}/g</span>`:"preco"===n&&"Fil"===e?i.innerHTML=`<span>${formatBRL(a[n])}/kg</span>`:"risco"===n&&"Fil"===e?i.innerHTML=`<span>${a[n]}%</span>`:"number"==typeof a[n]?i.innerText=formatBRL(a[n]):i.innerText=a[n]});var s;o&&((s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="removerItem(event, '${e}', ${r})">✕</button></div>`)})}}
+    function updateSeletores(){const e=document.getElementById("selMaquina"),t=document.getElementById("selFilamento");if(!e||!t)return;const n=e.value,o=t.value;e.innerHTML='""'===n?'<option value="" disabled selected>Selecionar...</option>':"",t.innerHTML='""'===o?'<option value="" disabled selected>Selecionar...</option>':"",maquinas.forEach(t=>e.innerHTML+=`<option value="${t.custoOp}" ${n==t.custoOp?"selected":""}>${t.marca} ${t.modelo}</option>`),filamentos.forEach(e=>t.innerHTML+=`<option value="${e.preco/1e3*(1+e.risco/100)}" ${o==e.preco/1e3*(1+e.risco/100)?"selected":""}>${(e.marca?e.marca+" ":"")+e.tipo}</option>`)}
+    function limparCampos(){["mMarca","mModelo","mEquipVal","fMarca","fTipo","fPreco"].forEach(e=>{const t=document.getElementById(e);t&&(t.value="")}),document.getElementById("fRisco").value=0,document.getElementById("riscoAtualTexto").innerText="0%",document.getElementById("suggestBox").removeAttribute("open"),isEditSug=!1,renderSugestoes()}
+    function startDragSug(e,t){let n=e.clientY;const o=e=>{let a=e.clientY-n;if(Math.abs(a)>40){let n=a>0?1:-1,r=t+n;r>=0&&r<sugestoesRiscos.length&&([sugestoesRiscos[t],sugestoesRiscos[r]]=[sugestoesRiscos[r],sugestoesRiscos[t]],t=r,start=e.clientY,renderSugestoes())}},a=()=>{document.removeEventListener("pointermove",o),document.removeEventListener("pointerup",a)};document.addEventListener("pointermove",o),document.addEventListener("pointerup",a)}
+    function startDrag(e,t,n){let o=e.clientY;const a=e=>{let i=e.clientY-o;if(Math.abs(i)>45){let o=i>0?1:-1,r="Maq"===t?maquinas:filamentos,l=n+o;l>=0&&l<r.length&&([r[n],r[l]]=[r[l],r[n]],n=l,start=e.clientY,render())}},i=()=>{document.removeEventListener("pointermove",a),document.removeEventListener("pointerup",i)};document.addEventListener("pointermove",a),document.addEventListener("pointerup",i)}
+    function updItem(e,t,n,o){const a="Maq"===e?maquinas:filamentos;if("marca"===n||"modelo"===n||"tipo"===n)a[t][n]=o;else{const i=parseFloat(o);isNaN(i)||(a[t][n]=i,"Maq"===e&&"valorEquip"===n&&(a[t].custoOp=.001*i))}render()}
+    function addMaq(){const e=parseFloat(document.getElementById("mEquipVal").value);if(!document.getElementById("mMarca").value||isNaN(e))return;maquinas.push({marca:document.getElementById("mMarca").value,modelo:document.getElementById("mModelo").value,valorEquip:e,custoOp:.001*e}),document.getElementById("formMaq").style.display="none",limparCampos(),render()}
+    function addFil(){const e=parseFloat(document.getElementById("fPreco").value);if(!document.getElementById("fTipo").value||isNaN(e))return;filamentos.push({marca:document.getElementById("fMarca").value,tipo:document.getElementById("fTipo").value,preco:e,risco:parseFloat(document.getElementById("fRisco").value)||0}),document.getElementById("formFil").style.display="none",limparCampos(),render()}
+    function removerItem(e,t,n){e&&e.stopPropagation(),confirm("Excluir?")&&(("Maq"===t?maquinas:filamentos).splice(n,1),render())}
+    function toggleEditMaq(e){e.stopPropagation(),0!==maquinas.length||isEditMaq?(isEditMaq=!isEditMaq,render()):void 0}
+    function toggleEditFil(e){e.stopPropagation(),0!==filamentos.length||isEditFil?(isEditFil=!isEditFil,render()):void 0}
+    function toggleFormMaq(e){e.stopPropagation(),document.getElementById("formMaq").style.display="block"}
+    function toggleFormFil(e){e.stopPropagation(),document.getElementById("formFil").style.display="block"}
+    function fecharModais(e){const t=document.getElementById("settingsMenu");t.classList.contains("open")&&!e.target.closest(".top-bar")&&t.classList.remove("open");const n=document.getElementById("customColorModal");n.classList.contains("open")&&!e.target.closest("#settingsMenu")&&n.classList.remove("open");const o=document.getElementById("formMaq"),a=document.getElementById("btnAddMaq");"block"===o.style.display&&!e.target.closest("#formMaq")&&e.target!==a&&(o.style.display="none",limparCampos());const i=document.getElementById("formFil"),r=document.getElementById("btnAddFil");"block"===i.style.display&&!e.target.closest("#formFil")&&e.target!==r&&(i.style.display="none",limparCampos()),isEditMaq&&!e.target.closest("#tabMaq")&&!e.target.closest("#btnEditMaq")&&(isEditMaq=!1,render()),isEditFil&&!e.target.closest("#tabFil")&&!e.target.closest("#btnEditFil")&&(isEditFil=!1,render()),isEditExtra&&!e.target.closest("#extrasBox")&&!e.target.closest("#btnEditExtra")&&(isEditExtra=!1,render()),isEditSug&&!e.target.closest("#suggestBox")&&!e.target.closest("#btnEditSug")&&(isEditSug=!1,renderSugestoes());const l=document.getElementById("extrasBox"),s=document.getElementById("btnToggleExtra");l.hasAttribute("open")&&!e.target.closest("#extrasBox")&&e.target!==s&&(l.removeAttribute("open"),document.getElementById("tempExtraRow").classList.remove("active"),isEditExtra=!1,render());const c=document.getElementById("suggestBox");c.hasAttribute("open")&&!e.target.closest("#suggestBox")&&!e.target.closest(".selector-row")&&(c.removeAttribute("open"),document.getElementById("tempRiskRow").classList.remove("active"),isEditSug=!1,renderSugestoes())}document.addEventListener("click",fecharModais),document.addEventListener("keydown",function(e){"Escape"===e.key&&(isEditMaq=!1,isEditFil=!1,isEditSug=!1,isEditExtra=!1,document.getElementById("formMaq").style.display="none",document.getElementById("formFil").style.display="none",document.getElementById("extrasBox").removeAttribute("open"),document.getElementById("suggestBox").removeAttribute("open"),document.getElementById("tempExtraRow").classList.remove("active"),document.getElementById("tempRiskRow").classList.remove("active"),document.getElementById("settingsMenu").classList.remove("open"),document.getElementById("customColorModal").classList.remove("open"),limparCampos(),render())}),initCalculator();
 </script>
 </body>
 </html>
