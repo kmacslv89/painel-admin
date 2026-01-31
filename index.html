@@ -13,7 +13,7 @@
             --text: #ffffff;
             --input-bg: #3d3d3d;
             --border: #444;
-            --primary: #2ecc71; /* Cor padrão */
+            --primary: #2ecc71; /* Cor de Destaque Padrão */
             --danger: #ff4757;
         }
 
@@ -54,52 +54,30 @@
         }
 
         .app-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0;
-            user-select: none;
+            font-size: 16px; font-weight: 600; color: #888;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin: 0; user-select: none;
         }
 
         .header-actions {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            position: absolute; right: 0; top: 0; height: 100%;
+            display: flex; align-items: center; gap: 5px;
         }
         
         .gear-btn { 
             background: none; border: none; 
             cursor: pointer; color: #888; 
-            padding: 8px; 
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
+            padding: 8px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; transition: all 0.3s ease;
         }
         
         .gear-btn svg {
-            width: 24px; height: 24px;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: none;
+            width: 24px; height: 24px; stroke: currentColor;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none;
         }
 
-        .gear-btn:hover { 
-            color: var(--text); 
-            background-color: rgba(128, 128, 128, 0.1); 
-        }
-
-        .gear-rotate:hover svg { 
-            transform: rotate(90deg); 
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .gear-btn:hover { color: var(--text); background-color: rgba(128, 128, 128, 0.1); }
+        .gear-rotate:hover svg { transform: rotate(90deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
         /* Menu Configurações */
         .settings-menu {
@@ -182,24 +160,53 @@
         .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-btns { display: flex; gap: 8px; align-items: center; }
         
-        .btn-icon-simple { background: none; border: none; color: var(--primary); font-size: 24px; cursor: pointer; font-weight: bold; padding: 5px; line-height: 1; transition: opacity 0.2s; }
-        .btn-icon-simple:hover { opacity: 0.8; }
-        
-        /* Botão X Neutro Simplificado */
-        .btn-icon-neutral { 
+        /* ESTILO DOS ÍCONES */
+        .btn-icon-simple,
+        .btn-icon-drag,
+        .btn-icon-delete,
+        .extra-chip-rm {
             background: none; border: none; 
-            color: #888; /* Cor neutra */
-            font-size: 20px; 
+            color: var(--primary) !important;
             cursor: pointer; 
             line-height: 1; 
-            padding: 0;
-            transition: color 0.2s; 
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1 !important; /* CORREÇÃO FINAL: Nunca fica fosco */
         }
-        .btn-icon-neutral:hover { color: var(--danger); } /* Feedback vermelho suave ao passar o mouse */
+
+        /* Botão de Edição (Lápis) */
+        .btn-icon-simple { 
+            font-size: 20px; 
+            font-weight: bold; 
+            padding: 6px;
+            border-radius: 6px; 
+            border: 1px solid transparent; 
+        }
         
-        .btn-icon-danger { color: var(--danger); font-size: 16px; cursor: pointer; font-weight: bold; } /* Usado em outros lugares se precisar */
-        
-        .btn-icon-drag { color: var(--text); opacity: 0.5; font-size: 18px; cursor: grab; touch-action: none; }
+        /* Estado ATIVO (Modo Edição) - Fundo Preenchido */
+        .btn-edit-active {
+            background-color: var(--primary) !important;
+            color: #fff !important; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Estado INATIVO (Hover) - Apenas um fundo cinza leve, SEM tirar brilho */
+        .btn-icon-simple:not(.btn-edit-active):hover {
+            background-color: rgba(128, 128, 128, 0.1); 
+            opacity: 1 !important;
+        }
+
+        /* Hover no estado ATIVO - Mais brilho */
+        .btn-edit-active:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Hover genérico para outros ícones */
+        .btn-icon-drag:hover,
+        .btn-icon-delete:hover,
+        .extra-chip-rm:hover {
+            opacity: 0.7 !important; /* Esses podem ter um leve feedback */
+        }
 
         .btn-confirm-style { background: var(--primary); color: #fff; border: none; border-radius: 4px; padding: 8px 15px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
@@ -207,9 +214,8 @@
         .setup-table th, .setup-table td { border: 1px solid var(--border); padding: 8px 2px; text-align: center; vertical-align: middle; height: 45px; box-sizing: border-box; color: var(--text); }
         .setup-table input { padding: 6px; font-size: 10px; border-radius: 4px; background: var(--bg); color: var(--text); border: 1px solid var(--border); width: 90%; }
         
-        .col-ctrl { width: 28px; border: none !important; padding: 0 !important; }
+        .col-ctrl { width: 35px; border: none !important; padding: 0 !important; } 
         .ctrl-icon-box { display: flex; align-items: center; justify-content: center; height: 100%; width: 100%; min-height: 45px; }
-        .btn-del-raw { background: none !important; border: none !important; padding: 0 !important; cursor: pointer; }
         .handle { cursor: grab; touch-action: none; }
 
         .selector-row { background: var(--input-bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
@@ -243,7 +249,7 @@
         .extras-chips-container { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
         .extra-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 5px 10px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 5px; color: var(--text); }
         .extra-chip span { color: var(--primary); font-weight: bold; }
-        .extra-chip-rm { cursor: pointer; color: var(--danger); font-weight: bold; margin-left: 5px; }
+        .extra-chip-rm { cursor: pointer; font-weight: bold; margin-left: 5px; color: var(--primary); }
 
         .extra-section { margin-top: 25px; }
         .extra-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -274,7 +280,6 @@
                 <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
         </button>
-        
         <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações">
             <svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -293,8 +298,7 @@
         </div>
         <div class="settings-section" style="position: relative;">
             <div class="settings-title">Cor de Destaque</div>
-            <div class="color-grid" id="colorGrid">
-                </div>
+            <div class="color-grid" id="colorGrid"></div>
             
             <div id="customColorModal" class="custom-color-modal" onclick="event.stopPropagation()">
                 <div class="settings-title" style="align-self: flex-start; margin-bottom:5px;">Personalizar</div>
@@ -678,9 +682,19 @@
     function updateButtonStates() {
         const btnMaq = document.getElementById('btnEditMaq');
         const btnFil = document.getElementById('btnEditFil');
+        const btnExtra = document.getElementById('btnEditExtra');
+        const btnSug = document.getElementById('btnEditSug');
         
-        btnMaq.innerHTML = isEditMaq ? '✔' : '✎';
-        btnFil.innerHTML = isEditFil ? '✔' : '✎';
+        const setBtnState = (btn, active) => {
+            btn.innerHTML = '✎';
+            if(active) btn.classList.add('btn-edit-active');
+            else btn.classList.remove('btn-edit-active');
+        }
+
+        setBtnState(btnMaq, isEditMaq);
+        setBtnState(btnFil, isEditFil);
+        setBtnState(btnExtra, isEditExtra);
+        setBtnState(btnSug, isEditSug);
     }
 
     /* --- LÓGICA DE EXTRAS COM INPUT TEMPORÁRIO --- */
@@ -695,7 +709,7 @@
                         <input class="suggest-edit-input" value="${item.nome}" onchange="updExtra(${idx}, 'nome', this.value)">
                         <input class="suggest-edit-input" style="width:70px" type="number" value="${item.valor}" onchange="updExtra(${idx}, 'valor', this.value)">
                     </div>
-                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="remExtra(event, ${idx})">✕</button></div></div>`;
+                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remExtra(event, ${idx})">✕</button></div></div>`;
             } else {
                 const isSelected = selectedExtras.includes(idx);
                 div.innerHTML = `
@@ -706,9 +720,7 @@
             container.appendChild(div);
         });
         
-        const btn = document.getElementById('btnEditExtra');
-        btn.innerHTML = isEditExtra ? '✔' : '✎';
-        btn.classList.toggle('active', isEditExtra);
+        updateButtonStates();
     }
 
     function showAddExtraInput() {
@@ -779,15 +791,13 @@
                         <input class="suggest-edit-input" value="${s.nome}" onchange="updSug(${idx}, 'nome', this.value)">
                         <input class="suggest-edit-input" style="width:40px" type="number" value="${s.risco}" onchange="updSug(${idx}, 'risco', this.value)">%
                     </div>
-                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-danger" onclick="remSug(event, ${idx})">✕</button></div></div>`;
+                    <div class="col-ctrl"><div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="remSug(event, ${idx})">✕</button></div></div>`;
             } else {
                 div.innerHTML = `<div class="suggest-data" onclick="setRisco(${s.risco})"><span>${s.nome}</span><strong>${s.risco}%</strong></div>`;
             }
             container.appendChild(div);
         });
-        const btn = document.getElementById('btnEditSug');
-        btn.innerHTML = isEditSug ? '✔' : '✎';
-        btn.classList.toggle('active', isEditSug);
+        updateButtonStates();
     }
 
     function showAddRiskInput() {
@@ -928,8 +938,7 @@
             });
             if(editMode) {
                 const tdR = row.insertCell(); tdR.className = 'col-ctrl';
-                // Novo Botão X simplificado neutro
-                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-neutral" onclick="removerItem('${id}', ${idx})">✕</button></div>`;
+                tdR.innerHTML = `<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="removerItem(event, '${id}', ${idx})">✕</button></div>`;
             }
         });
     }
@@ -947,10 +956,28 @@
     function limparCampos() { ['mMarca', 'mModelo', 'mEquipVal', 'fMarca', 'fTipo', 'fPreco'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; }); document.getElementById('fRisco').value = 0; document.getElementById('riscoAtualTexto').innerText = '0%'; document.getElementById('suggestBox').removeAttribute('open'); isEditSug = false; renderSugestoes(); }
     function startDragSug(e, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 40) { let dir = diff > 0 ? 1 : -1; let n = idx + dir; if(n>=0 && n<sugestoesRiscos.length) { [sugestoesRiscos[idx], sugestoesRiscos[n]] = [sugestoesRiscos[n], sugestoesRiscos[idx]]; idx = n; startY = ev.clientY; renderSugestoes(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
     function startDrag(e, id, idx) { let startY = e.clientY; const move = (ev) => { let diff = ev.clientY - startY; if(Math.abs(diff) > 45) { let dir = diff > 0 ? 1 : -1; let a = id==='Maq'?maquinas:filamentos; let n = idx + dir; if(n>=0 && n<a.length) { [a[idx], a[n]] = [a[n], a[idx]]; idx = n; startY = ev.clientY; render(); } } }; const end = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', end); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', end); }
-    function updItem(id, idx, campo, val) { const arr = id==='Maq'?maquinas:filamentos; arr[idx][campo] = isNaN(val)||val==='' ? v : parseFloat(val); if(id==='Maq'&&campo==='valorEquip') arr[idx].custoOp = arr[idx][campo]*0.001; render(); }
+    
+    function updItem(id, idx, campo, val) { 
+        const arr = id === 'Maq' ? maquinas : filamentos;
+        if (campo === 'marca' || campo === 'modelo' || campo === 'tipo') {
+            arr[idx][campo] = val;
+        } else {
+            const num = parseFloat(val);
+            if (isNaN(num)) return; 
+            arr[idx][campo] = num;
+            if (id === 'Maq' && campo === 'valorEquip') {
+                arr[idx].custoOp = num * 0.001;
+            }
+        }
+        render();
+    }
+    
     function addMaq() { const v = parseFloat(document.getElementById('mEquipVal').value); if(!document.getElementById('mMarca').value || isNaN(v)) return; maquinas.push({marca:document.getElementById('mMarca').value, modelo:document.getElementById('mModelo').value, valorEquip:v, custoOp:v*0.001}); document.getElementById('formMaq').style.display='none'; limparCampos(); render(); }
     function addFil() { const p = parseFloat(document.getElementById('fPreco').value); if(!document.getElementById('fTipo').value || isNaN(p)) return; filamentos.push({marca:document.getElementById('fMarca').value, tipo:document.getElementById('fTipo').value, preco:p, risco:parseFloat(document.getElementById('fRisco').value)||0}); document.getElementById('formFil').style.display='none'; limparCampos(); render(); }
-    function removerItem(id, idx) { if(confirm("Excluir?")) { (id==='Maq'?maquinas:filamentos).splice(idx,1); render(); } }
+    function removerItem(e, id, idx) { 
+        if(e) e.stopPropagation(); 
+        if(confirm("Excluir?")) { (id==='Maq'?maquinas:filamentos).splice(idx,1); render(); } 
+    }
     function toggleEditMaq(e) { e.stopPropagation(); if (maquinas.length === 0 && !isEditMaq) return; isEditMaq = !isEditMaq; render(); }
     function toggleEditFil(e) { e.stopPropagation(); if (filamentos.length === 0 && !isEditFil) return; isEditFil = !isEditFil; render(); }
     function toggleFormMaq(e) { e.stopPropagation(); document.getElementById('formMaq').style.display = 'block'; }
@@ -981,9 +1008,12 @@
             limparCampos();
         }
         
+        // Fecha modo edição se clicar fora das tabelas
         if (isEditMaq && !e.target.closest('#tabMaq') && !e.target.closest('#btnEditMaq')) { isEditMaq = false; render(); }
         if (isEditFil && !e.target.closest('#tabFil') && !e.target.closest('#btnEditFil')) { isEditFil = false; render(); }
-        
+        if (isEditExtra && !e.target.closest('#extrasBox') && !e.target.closest('#btnEditExtra')) { isEditExtra = false; render(); }
+        if (isEditSug && !e.target.closest('#suggestBox') && !e.target.closest('#btnEditSug')) { isEditSug = false; renderSugestoes(); }
+
         const extrasBox = document.getElementById('extrasBox');
         const btnToggleExtra = document.getElementById('btnToggleExtra');
         if (extrasBox.hasAttribute('open') && !e.target.closest('#extrasBox') && e.target !== btnToggleExtra) {
