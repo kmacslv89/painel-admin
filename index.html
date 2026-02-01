@@ -13,10 +13,10 @@
             --text: #ffffff;
             --input-bg: #3d3d3d;
             --border: #444;
-            --primary: #2ecc71; /* Cor de Destaque Padrão */
+            --primary: #2ecc71;
             --danger: #ff4757;
-            --shopee: #ee4d2d; /* Cor Shopee */
-            --ml: #ffe600; /* Cor Mercado Livre */
+            --shopee: #ee4d2d;
+            --ml: #ffe600;
         }
 
         body.light-mode {
@@ -159,14 +159,13 @@
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
+        /* Input Locked Style */
+        .input-locked { background-color: rgba(0,0,0,0.2) !important; color: #888 !important; pointer-events: none; border-color: transparent !important; }
+
         .header-config { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-btns { display: flex; gap: 8px; align-items: center; }
         
-        /* ESTILO DOS ÍCONES */
-        .btn-icon-simple,
-        .btn-icon-drag,
-        .btn-icon-delete,
-        .extra-chip-rm {
+        .btn-icon-simple, .btn-icon-drag, .btn-icon-delete, .extra-chip-rm {
             background: none; border: none; 
             color: var(--primary) !important;
             cursor: pointer; 
@@ -176,37 +175,11 @@
             opacity: 1 !important;
         }
 
-        /* Botão de Edição (Lápis) */
-        .btn-icon-simple { 
-            font-size: 20px; 
-            font-weight: bold; 
-            padding: 6px;
-            border-radius: 6px; 
-            border: 1px solid transparent; 
-        }
-        
-        /* Estado ATIVO (Modo Edição) - Fundo Preenchido */
-        .btn-edit-active {
-            background-color: var(--primary) !important;
-            color: #fff !important; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        /* Estado INATIVO (Hover) */
-        .btn-icon-simple:not(.btn-edit-active):hover {
-            background-color: rgba(128, 128, 128, 0.1); 
-            opacity: 1 !important;
-        }
-
-        .btn-edit-active:hover {
-            filter: brightness(1.1);
-        }
-
-        .btn-icon-drag:hover,
-        .btn-icon-delete:hover,
-        .extra-chip-rm:hover {
-            opacity: 0.7 !important;
-        }
+        .btn-icon-simple { font-size: 20px; font-weight: bold; padding: 6px; border-radius: 6px; border: 1px solid transparent; }
+        .btn-edit-active { background-color: var(--primary) !important; color: #fff !important; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .btn-icon-simple:not(.btn-edit-active):hover { background-color: rgba(128, 128, 128, 0.1); opacity: 1 !important; }
+        .btn-edit-active:hover { filter: brightness(1.1); }
+        .btn-icon-drag:hover, .btn-icon-delete:hover, .extra-chip-rm:hover { opacity: 0.7 !important; }
 
         .btn-confirm-style { background: var(--primary); color: #fff; border: none; border-radius: 4px; padding: 8px 15px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
@@ -259,33 +232,19 @@
 
         .result { margin-top: 20px; padding: 20px; background: rgba(128, 128, 128, 0.05); border: 1px solid var(--primary); border-radius: 15px; text-align: center; }
         .result-title { font-size: 12px; color: #888; margin-bottom: 5px; }
-        .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 5px; } /* Ajustei margem inferior */
+        .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 5px; } 
         .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--border); font-size: 12px; color: #888; }
         .detail-row.total-custo { color: var(--text); font-weight: bold; border-top: 1px solid var(--border); margin-top: 5px; padding-top: 8px; }
         
         /* ESTILOS SHOPEE BOX */
-        .shopee-box {
-            margin: 0 0 10px 0;
-            padding: 12px;
-            background: rgba(238, 77, 45, 0.08);
-            border-radius: 10px;
-            border: 1px solid rgba(238, 77, 45, 0.3);
-            text-align: center;
-        }
+        .shopee-box { margin: 0 0 10px 0; padding: 12px; background: rgba(238, 77, 45, 0.08); border-radius: 10px; border: 1px solid rgba(238, 77, 45, 0.3); text-align: center; }
         .shopee-title { font-size: 10px; color: var(--shopee); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
         .shopee-value-row { display: flex; justify-content: center; align-items: center; gap: 8px; }
         .shopee-main-value { font-size: 26px; color: var(--shopee); font-weight: bold; line-height: 1; }
         .shopee-tag { font-size: 11px; background: var(--shopee); color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 5px rgba(238, 77, 45, 0.3); }
 
         /* ESTILOS MERCADO LIVRE BOX */
-        .ml-box {
-            margin: 0 0 20px 0;
-            padding: 12px;
-            background: rgba(255, 230, 0, 0.08);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 230, 0, 0.3);
-            text-align: center;
-        }
+        .ml-box { margin: 0 0 20px 0; padding: 12px; background: rgba(255, 230, 0, 0.08); border-radius: 10px; border: 1px solid rgba(255, 230, 0, 0.3); text-align: center; }
         .ml-title { font-size: 10px; color: var(--ml); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px; }
         .ml-value-row { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;}
         .ml-main-value { font-size: 26px; color: var(--ml); font-weight: bold; line-height: 1; }
@@ -303,6 +262,7 @@
         <button class="gear-btn" onclick="downloadApp()" title="Trabalhar Offline"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
         <button class="gear-btn gear-rotate" onclick="toggleSettings(event)" title="Configurações"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
     </div>
+    
     <div id="settingsMenu" class="settings-menu" onclick="event.stopPropagation()">
         <div class="settings-section">
             <div class="settings-title">Tema</div>
@@ -335,8 +295,8 @@
         <select id="selFilamento" onchange="updateSeletores()"><option value="" disabled selected>Selecionar...</option></select>
         
         <div class="side-by-side">
-            <div><label>Tempo de Impressão</label><input type="text" id="tempo" placeholder="Ex: 1:30, 90m, 1h30min ou 1.5"></div>
-            <div><label>Peso</label><input type="number" id="weight" step="1" placeholder="Gramas"></div>
+            <div><label>Tempo de Impressão</label><input type="text" id="tempo" placeholder="0d0h00m"></div>
+            <div><label>Peso</label><input type="text" id="weight" placeholder="0g"></div>
         </div>
         
         <label>Fórmula de Cálculo</label>
@@ -382,10 +342,10 @@
             </div>
 
             <div class="ml-box">
-                <div class="ml-title">Preço Sugerido Mercado Livre (Clássico/Premium)</div>
+                <div class="ml-title">Preço para Mercado Livre (Premium)</div>
                 <div class="ml-value-row">
                     <span class="ml-main-value" id="valML">R$ 0,00</span>
-                    <span class="ml-tag" id="tagML" style="display:none">Incluso Frete Grátis</span>
+                    <span class="ml-tag" id="tagML" style="display:none">🚚 Frete Grátis Incluso</span>
                 </div>
             </div>
 
@@ -428,7 +388,6 @@
 </div>
 
 <script>
-    /* ... Funções de Download e Tema (Mantidas inalteradas) ... */
     async function downloadApp(){const e=document.documentElement.outerHTML,t=new Blob([e],{type:"text/html"}),n="Guias para Orçamento.html";if(window.showSaveFilePicker)try{const o=await window.showSaveFilePicker({suggestedName:n,types:[{description:"Arquivo HTML",accept:{"text/html":[".html"]}}]}),a=await o.createWritable();await a.write(t),await a.close();return}catch(e){if("AbortError"!==e.name)console.error(e);else return}const o=URL.createObjectURL(t),a=document.createElement("a");a.href=o,a.download=n,document.body.appendChild(a),a.click(),setTimeout(()=>{document.body.removeChild(a),URL.revokeObjectURL(o)},100)}
     const colors=["#2ecc71","#3498db","#9b59b6","#e67e22","#e74c3c"];let tempCustomColor="";function initTheme(){const e=localStorage.getItem("theme_v50")||"dark",t=localStorage.getItem("color_v50")||colors[0];setTheme(e),setColor(t)}function toggleSettings(e){e.stopPropagation(),document.getElementById("settingsMenu").classList.toggle("open")}function setTheme(e){document.body.classList.toggle("light-mode","light"===e),document.getElementById("themeDark").classList.toggle("active","dark"===e),document.getElementById("themeLight").classList.toggle("active","light"===e),localStorage.setItem("theme_v50",e)}function setColor(e){document.documentElement.style.setProperty("--primary",e),localStorage.setItem("color_v50",e),renderColorGrid(e)}function renderColorGrid(e){const t=document.getElementById("colorGrid");t.innerHTML="",colors.forEach(n=>{const o=document.createElement("div");o.className=`color-swatch ${n===e?"active":""}`,o.style.backgroundColor=n,o.onclick=()=>setColor(n),t.appendChild(o)});const n=document.createElement("div");n.className="color-swatch custom-picker-btn",colors.includes(e)?n.innerHTML="<span>+</span>":(n.classList.add("active"),n.style.backgroundColor=e,n.style.color="transparent",n.style.border="2px solid var(--text)"),n.onclick=e=>{e.stopPropagation(),openCustomColorModal()},t.appendChild(n)}function openCustomColorModal(){const e=document.getElementById("customColorModal");document.getElementById("hueSlider").value=0,document.getElementById("satSlider").value=70,document.getElementById("ligSlider").value=50,updateCustomColor(),e.classList.add("open")}function updateCustomColor(){const e=document.getElementById("hueSlider").value,t=document.getElementById("satSlider").value,n=document.getElementById("ligSlider").value,o=`hsl(${e}, ${t}%, ${n}%)`;tempCustomColor=o,document.getElementById("colorPreview").style.backgroundColor=o,document.getElementById("satSlider").style.background=`linear-gradient(to right, #888, hsl(${e}, 100%, 50%))`,document.getElementById("ligSlider").style.background=`linear-gradient(to right, #000, hsl(${e}, 100%, 50%), #fff)`}function confirmCustomColor(){tempCustomColor&&setColor(tempCustomColor),document.getElementById("customColorModal").classList.remove("open")}
     function toggleMainContent(){const e=document.getElementById("mainContentWrapper");e.classList.contains("collapsed")?e.classList.remove("collapsed"):e.classList.add("collapsed")}
@@ -463,7 +422,7 @@
     function calcularVenda(){
         const e=document.getElementById("selMaquina"),t=document.getElementById("selFilamento");
         if(!e.value||!t.value)return void alert("Selecione a Impressora e o Filamento.");
-        const n=parseFloat(e.value),o=parseFloat(t.value),a=parseTempo(document.getElementById("tempo").value),i=parseFloat(document.getElementById("weight").value)||0,r=a*n,l=i*o,s=r+l,c=document.querySelector('input[name="formulaType"]:checked');
+        const n=parseFloat(e.value),o=parseFloat(t.value),a=parseTempo(document.getElementById("tempo").value),i=parsePeso(document.getElementById("weight").value),r=a*n,l=i*o,s=r+l,c=document.querySelector('input[name="formulaType"]:checked');
         if(!c)return void alert("Selecione uma Fórmula de Cálculo.");
         
         let d=0;
@@ -477,25 +436,21 @@
         
         let u=0;
         selectedExtras.forEach(e=>{extrasList[e]&&(u+=extrasList[e].valor)});
-        const m=d+u; // Valor Sugerido (Verde)
+        const m=d+u; 
         
         // CALCULO SHOPEE
-        // Fórmula: (ValorSugerido + 4.00) / 0.80
         const shopeeVal = (m + 4) / 0.8;
         let diffPercent = 0;
         if (m > 0) {
             diffPercent = ((shopeeVal - m) / m) * 100;
         }
 
-        // CALCULO MERCADO LIVRE
-        // Passo A (Tentativa Frete Cliente): (ValorSugerido + 6.00) / 0.81
-        let mlVal = (m + 6) / 0.81;
+        // CALCULO MERCADO LIVRE ATUALIZADO (6.50 fixo e 79.00 trava)
+        let mlVal = (m + 6.50) / 0.81;
         let mlFreeShipping = false;
 
-        // Passo B (Verificação Lógica)
         if (mlVal >= 79.00) {
-            // Recalcula com custo de frete (R$ 40) pois passou do teto
-            mlVal = (m + 40) / 0.81;
+            mlVal = (m + 40.00) / 0.81;
             mlFreeShipping = true;
         }
 
@@ -511,7 +466,7 @@
         const tagML = document.getElementById("tagML");
         if (mlFreeShipping) {
             tagML.style.display = "inline-block";
-            tagML.innerText = "Incluso Frete Grátis";
+            tagML.innerText = "🚚 Frete Grátis Incluso";
         } else {
             tagML.style.display = "none";
         }
@@ -523,21 +478,73 @@
         u>0?(p.style.display="flex",document.getElementById("resCustoExtra").innerText=formatBRL(u)):p.style.display="none"
     }
 
-    function parseTempo(e){
-        let t=e.toLowerCase().trim();
-        if(t.includes(":")){
-            let e=t.split(":"),n=parseFloat(e[0])||0,o=parseFloat(e[1])||0;
-            return n+o/60
+    function parseTempo(input) {
+        let str = input.toLowerCase().replace(/\s/g, '').replace(',', '.');
+        if (!isNaN(parseFloat(str)) && !str.match(/[dhm:]/)) return parseFloat(str);
+
+        let d = 0, h = 0, m = 0;
+
+        // Formato HH:MM
+        if (str.includes(':')) {
+            let parts = str.split(':');
+            h = parseFloat(parts[0]) || 0;
+            m = parseFloat(parts[1]) || 0;
+            return h + (m / 60);
         }
-        if(t=t.replace(",","."),t.includes("h")||t.includes("m")){
-            let e=0,n=0;
-            let o=t.match(/([\d\.]+)\s*h/);o&&(e=parseFloat(o[1]));
-            let a=t.match(/([\d\.]+)\s*m/);return a&&(n=parseFloat(a[1])),e+n/60
+
+        // Formato XdYhZm
+        let matchD = str.match(/(\d+(\.\d+)?)d/);
+        if (matchD) d = parseFloat(matchD[1]);
+
+        let matchH = str.match(/(\d+(\.\d+)?)h/);
+        if (matchH) h = parseFloat(matchH[1]);
+
+        let matchM = str.match(/(\d+(\.\d+)?)m/);
+        if (matchM) m = parseFloat(matchM[1]);
+
+        return (d * 24) + h + (m / 60);
+    }
+    
+    function parsePeso(input) {
+        if(!input) return 0;
+        let str = input.toString().toLowerCase().replace(/\s/g, '').replace(',', '.');
+        let val = parseFloat(str);
+        if (isNaN(val)) return 0;
+        if (str.includes('kg')) {
+            return val * 1000;
         }
-        return parseFloat(t)||0
+        return val; // Padrão gramas
     }
 
-    function renderTabela(e,t,n,o){const a=document.getElementById("head"+e),i=document.getElementById("body"+e);if(a.innerHTML="",i.innerHTML="",0!==t.length||o){const r=a.insertRow();o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));n.forEach(t=>{const n=document.createElement("th"),o={marca:"Marca",modelo:"Modelo",valorEquip:"Valor do Equipamento",custoOp:"Custo Operacional"},a={marca:"Marca",tipo:"Material",preco:"Preço",risco:"Risco de Perda",total:"Custo do Material"};n.innerText="Maq"===e?o[t]:a[t],r.appendChild(n)});var l;o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));t.forEach((a,r)=>{const l=i.insertRow();if(o){(s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDrag(event, '${e}', ${r})">☰</span></div>`}n.forEach(n=>{const i=l.insertCell();if(o)if("custoOp"===n||"total"===n){const t="Maq"===e?a.custoOp:a.preco/1e3*(1+a.risco/100);i.innerHTML=`<input value="${formatBRL(t)}${"Maq"===e?"/h":"/g"}" readonly>`}else{const t="marca"===n||"modelo"===n||"tipo"===n?"text":"number";i.innerHTML=`<input type="${t}" value="${a[n]}" onchange="updItem('${e}', ${r}, '${n}', this.value)">`}else"custoOp"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.custoOp)}/h</span>`:"total"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.preco/1e3*(1+a.risco/100))}/g</span>`:"preco"===n&&"Fil"===e?i.innerHTML=`<span>${formatBRL(a[n])}/kg</span>`:"risco"===n&&"Fil"===e?i.innerHTML=`<span>${a[n]}%</span>`:"number"==typeof a[n]?i.innerText=formatBRL(a[n]):i.innerText=a[n]});var s;o&&((s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="removerItem(event, '${e}', ${r})">✕</button></div>`)})}}
+    function renderTabela(e,t,n,o){
+        const a=document.getElementById("head"+e),i=document.getElementById("body"+e);
+        if(a.innerHTML="",i.innerHTML="",0!==t.length||o){
+            const r=a.insertRow();o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));
+            n.forEach(t=>{const n=document.createElement("th"),o={marca:"Marca",modelo:"Modelo",valorEquip:"Valor do Equipamento",custoOp:"Custo Operacional"},a={marca:"Marca",tipo:"Material",preco:"Preço",risco:"Risco de Perda",total:"Custo do Material"};n.innerText="Maq"===e?o[t]:a[t],r.appendChild(n)});
+            var l;o&&((l=document.createElement("th")).className="col-ctrl",r.appendChild(l));
+            t.forEach((a,r)=>{
+                const l=i.insertRow();
+                if(o){(s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><span class="ctrl-icon handle btn-icon-drag" onpointerdown="startDrag(event, '${e}', ${r})">☰</span></div>`}
+                n.forEach(n=>{
+                    const i=l.insertCell();
+                    if(o) {
+                        // LOGICA DE CAMPO BLOQUEADO
+                        if("custoOp"===n||"total"===n){
+                            const t="Maq"===e?a.custoOp:a.preco/1e3*(1+a.risco/100);
+                            i.innerHTML=`<input value="${formatBRL(t)}${"Maq"===e?"/h":"/g"}" readonly class="input-locked">`
+                        } else {
+                            const t="marca"===n||"modelo"===n||"tipo"===n?"text":"number";
+                            i.innerHTML=`<input type="${t}" value="${a[n]}" onchange="updItem('${e}', ${r}, '${n}', this.value)">`
+                        }
+                    } else {
+                        "custoOp"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.custoOp)}/h</span>`:"total"===n?i.innerHTML=`<span class="highlight">${formatBRL(a.preco/1e3*(1+a.risco/100))}/g</span>`:"preco"===n&&"Fil"===e?i.innerHTML=`<span>${formatBRL(a[n])}/kg</span>`:"risco"===n&&"Fil"===e?i.innerHTML=`<span>${a[n]}%</span>`:"number"==typeof a[n]?i.innerText=formatBRL(a[n]):i.innerText=a[n]
+                    }
+                });
+                var s;o&&((s=l.insertCell()).className="col-ctrl",s.innerHTML=`<div class="ctrl-icon-box"><button class="btn-del-raw btn-icon-delete" onclick="removerItem(event, '${e}', ${r})">✕</button></div>`)
+            })
+        }
+    }
+    
     function updateSeletores(){const e=document.getElementById("selMaquina"),t=document.getElementById("selFilamento");if(!e||!t)return;const n=e.value,o=t.value;e.innerHTML='""'===n?'<option value="" disabled selected>Selecionar...</option>':"",t.innerHTML='""'===o?'<option value="" disabled selected>Selecionar...</option>':"",maquinas.forEach(t=>e.innerHTML+=`<option value="${t.custoOp}" ${n==t.custoOp?"selected":""}>${t.marca} ${t.modelo}</option>`),filamentos.forEach(e=>t.innerHTML+=`<option value="${e.preco/1e3*(1+e.risco/100)}" ${o==e.preco/1e3*(1+e.risco/100)?"selected":""}>${(e.marca?e.marca+" ":"")+e.tipo}</option>`)}
     function limparCampos(){["mMarca","mModelo","mEquipVal","fMarca","fTipo","fPreco"].forEach(e=>{const t=document.getElementById(e);t&&(t.value="")}),document.getElementById("fRisco").value=0,document.getElementById("riscoAtualTexto").innerText="0%",document.getElementById("suggestBox").removeAttribute("open"),isEditSug=!1,renderSugestoes()}
     function startDragSug(e,t){let n=e.clientY;const o=e=>{let a=e.clientY-n;if(Math.abs(a)>40){let n=a>0?1:-1,r=t+n;r>=0&&r<sugestoesRiscos.length&&([sugestoesRiscos[t],sugestoesRiscos[r]]=[sugestoesRiscos[r],sugestoesRiscos[t]],t=r,start=e.clientY,renderSugestoes())}},a=()=>{document.removeEventListener("pointermove",o),document.removeEventListener("pointerup",a)};document.addEventListener("pointermove",o),document.addEventListener("pointerup",a)}
