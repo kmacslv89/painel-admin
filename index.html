@@ -231,7 +231,8 @@
         .btn-simple-toggle:hover { opacity: 0.8; }
 
         .result { margin-top: 20px; padding: 20px; background: rgba(128, 128, 128, 0.05); border: 1px solid var(--primary); border-radius: 15px; text-align: center; }
-        .result-title { font-size: 12px; color: #888; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
+        /* Título do resultado principal agora usa var(--primary) */
+        .result-title { font-size: 12px; color: var(--primary); margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
         .result-main-value { display: block; font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 15px; } 
         .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--border); font-size: 12px; color: #888; }
         .detail-row.total-custo { color: var(--text); font-weight: bold; border-top: 1px solid var(--border); margin-top: 5px; padding-top: 8px; }
@@ -245,8 +246,9 @@
         
         .platform-value-row { display: flex; justify-content: center; align-items: center; gap: 8px; }
         
-        .shopee-main-value { font-size: 26px; color: var(--shopee); font-weight: bold; line-height: 1; }
-        .ml-main-value { font-size: 26px; color: var(--ml); font-weight: bold; line-height: 1; }
+        /* Tamanho das fontes Shopee e ML ajustados para 32px para igualar Venda Direta */
+        .shopee-main-value { font-size: 32px; color: var(--shopee); font-weight: bold; line-height: 1; }
+        .ml-main-value { font-size: 32px; color: var(--ml); font-weight: bold; line-height: 1; }
         
         .percent-tag { font-size: 11px; color: #fff; padding: 2px 6px; border-radius: 6px; font-weight: bold; }
         .tag-shopee { background: var(--shopee); box-shadow: 0 2px 5px rgba(238, 77, 45, 0.3); }
